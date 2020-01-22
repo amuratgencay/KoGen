@@ -12,7 +12,10 @@ namespace KoGen.Models.DataModels
         public Package(string name) { Name = name; }
 
         private static readonly Package _root = new Package();
-        public static implicit operator Package(string value)
+
+        public static readonly Package DefaultPackage = ContertToPackage("java.lang");
+
+        private static Package ContertToPackage(string value)
         {
             var i = _root;
             foreach (var item in value.Split('.'))
@@ -31,6 +34,8 @@ namespace KoGen.Models.DataModels
             }
             return i;
         }
+        public static implicit operator Package(string value) => ContertToPackage(value);
+
 
         public override string ToString()
         {

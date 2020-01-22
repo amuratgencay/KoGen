@@ -3,16 +3,34 @@ using System.Linq;
 
 namespace KoGen.Models.DataModels
 {
-    public class Class
+    public class ClassInstance
     {
-        public Class BaseClass { get; set; }
-        public Package Package { get; set; }
         public AccessModifier AccessModifier { get; set; }
         public List<NonAccessModifier> NonAccessModifiers { get; set; } = new List<NonAccessModifier>();
+        public List<Annotation> Annotations { get; set; }
         public string Name { get; set; }
-        public List<DataModel> ClassMembers { get; set; } = new List<DataModel>();
+        public Class Owner { get; set; }
+        public Class Type { get; set; }
+        public object Value { get; set; }
+
+        public string GetDeclaration()
+        {
+            var res = $@"{AccessModifier.ToString().ToLower()} {NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y)} {Type} {Name}{(Value != null ? $@" = {DataType.AssingString(Value)}" : "")};";
+            return res;
+        }
+    }
+    public class Class
+    {
+        public Class BaseClass { get; set; } = PredefinedClasses.PredefinedClass.JavaObject; 
+        public Package Package { get; set; }
+        public bool Nullable { get; set; } = true;
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Public;
+        public List<NonAccessModifier> NonAccessModifiers { get; set; } = new List<NonAccessModifier>();
+        public string Name { get; set; }
+        public List<ClassInstance> ClassMembers { get; set; } = new List<ClassInstance>();
+        public bool Instantiated { get; private set; }
         public List<Annotation> Annotations { get; set; } = new List<Annotation>();
-        public string ToJavaFile()
+        public virtual string ToJavaFile()
         {
             var imports = "\r\n\r\n";
             if(BaseClass!=null && BaseClass.Package.ToString() != Package.ToString())

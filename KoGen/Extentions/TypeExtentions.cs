@@ -1,5 +1,8 @@
 ﻿using KoGen.Models.DatabaseModels;
+using KoGen.Models.DataModels;
+using KoGen.Models.DataModels.PredefinedClasses;
 using System;
+using System.Collections.Generic;
 
 namespace KoGen.Extentions
 {
@@ -26,11 +29,39 @@ namespace KoGen.Extentions
                     return null;
             }
         }
+        private static Dictionary<Type, Class> _javaTypeDictionary = new Dictionary<Type, Class>
+        {
+            {typeof(char), PredefinedClass.JavaCharPrimitive },
+            {typeof(char?), PredefinedClass.JavaCharacter },
 
+            {typeof(string), PredefinedClass.JavaString },
+
+            {typeof(short), PredefinedClass.JavaShortPrimitive },
+            {typeof(short?), PredefinedClass.JavaShort },
+            {typeof(Int16), PredefinedClass.JavaShort},
+            {typeof(Int16?), PredefinedClass.JavaShort},
+
+            {typeof(int), PredefinedClass.JavaIntPrimitive },
+            {typeof(int?), PredefinedClass.JavaInteger },
+            {typeof(Int32), PredefinedClass.JavaInteger },
+            {typeof(Int32?), PredefinedClass.JavaInteger },
+
+
+            {typeof(long), PredefinedClass.JavaLongPrimitive },
+            {typeof(int?), PredefinedClass.JavaLong },
+            {typeof(Int64), PredefinedClass.JavaLong },
+            {typeof(Int64?), PredefinedClass.JavaLong },
+
+
+            {typeof(DateTime), PredefinedClass.JavaDate },
+
+
+        };
 
         public static string ToJavaType(this Type type, out bool nullable)
         {
             nullable = true;
+
             if (type == typeof(char) || type == typeof(char?))
             {
                 return "Character";
