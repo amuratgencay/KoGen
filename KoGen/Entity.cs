@@ -2,7 +2,7 @@
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
-using KoGen.Models.DataModels.PredefinedClasses;
+using KoGen.Models.DataModels.Predefined;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,7 +22,7 @@ namespace KoGen
             Package = $@"havelsan.kovan.{module}.service.entity";
             AccessModifier = AccessModifier.Public;
 
-            BaseClass = PredefinedClass.HvlEntity;
+            BaseClass = PredefinedClasses.HvlEntity;
 
             Annotations.Add(DataAnnotations.Entity());
 

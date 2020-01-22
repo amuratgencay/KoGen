@@ -1,6 +1,6 @@
 ﻿using KoGen.Models.DatabaseModels;
 using KoGen.Models.DataModels;
-using KoGen.Models.DataModels.PredefinedClasses;
+using KoGen.Models.DataModels.Predefined;
 using System;
 using System.Collections.Generic;
 
@@ -31,79 +31,83 @@ namespace KoGen.Extentions
         }
         private static Dictionary<Type, Class> _javaTypeDictionary = new Dictionary<Type, Class>
         {
-            {typeof(char), PredefinedClass.JavaCharPrimitive },
-            {typeof(char?), PredefinedClass.JavaCharacter },
+            {typeof(char), PredefinedClasses.JavaCharPrimitive },
+            {typeof(char?), PredefinedClasses.JavaCharacter },
 
-            {typeof(string), PredefinedClass.JavaString },
+            {typeof(string), PredefinedClasses.JavaString },
 
-            {typeof(short), PredefinedClass.JavaShortPrimitive },
-            {typeof(short?), PredefinedClass.JavaShort },
-            {typeof(Int16), PredefinedClass.JavaShort},
-            {typeof(Int16?), PredefinedClass.JavaShort},
+            {typeof(short), PredefinedClasses.JavaShortPrimitive },
+            {typeof(short?), PredefinedClasses.JavaShort },
+            {typeof(Int16), PredefinedClasses.JavaShort},
+            {typeof(Int16?), PredefinedClasses.JavaShort},
 
-            {typeof(int), PredefinedClass.JavaIntPrimitive },
-            {typeof(int?), PredefinedClass.JavaInteger },
-            {typeof(Int32), PredefinedClass.JavaInteger },
-            {typeof(Int32?), PredefinedClass.JavaInteger },
-
-
-            {typeof(long), PredefinedClass.JavaLongPrimitive },
-            {typeof(int?), PredefinedClass.JavaLong },
-            {typeof(Int64), PredefinedClass.JavaLong },
-            {typeof(Int64?), PredefinedClass.JavaLong },
+            {typeof(int), PredefinedClasses.JavaIntPrimitive },
+            {typeof(int?), PredefinedClasses.JavaInteger },
+            {typeof(Int32), PredefinedClasses.JavaInteger },
+            {typeof(Int32?), PredefinedClasses.JavaInteger },
 
 
-            {typeof(DateTime), PredefinedClass.JavaDate },
+            {typeof(long), PredefinedClasses.JavaLongPrimitive },
+            {typeof(int?), PredefinedClasses.JavaLong },
+            {typeof(Int64), PredefinedClasses.JavaLong },
+            {typeof(Int64?), PredefinedClasses.JavaLong },
 
+
+            {typeof(DateTime), PredefinedClasses.JavaDate },
+
+            {typeof(List<>), PredefinedClasses.JavaList},
 
         };
-
-        public static string ToJavaType(this Type type, out bool nullable)
+        public static Class ToJavaType(this Type type)
         {
-            nullable = true;
+            return _javaTypeDictionary.ContainsKey(type) ? _javaTypeDictionary[type] : throw new Exception("");
+        }
+        //public static string ToJavaType(this Type type, out bool nullable)
+        //{
+        //    nullable = true;
 
-            if (type == typeof(char) || type == typeof(char?))
-            {
-                return "Character";
-            }
-            else if (type == typeof(int))
-            {
-                nullable = false;
-                return "int";
-            }
-            else if (type == typeof(int?) || type == typeof(Int32) || type == typeof(Int32?))
-            {
-                nullable = true;
-                return "Integer";
-            }
-            else if (type == typeof(short) || type == typeof(short?) || type == typeof(Int16) || type == typeof(Int16?))
-            {
-                nullable = true;
-                return "Short";
-            }
-            else if (type == typeof(Int64) || type == typeof(Int64?))
-            {
-                nullable = true;
-                return "Long";
-            }
-            else if (type == typeof(string) || type == typeof(String))
-            {
-                return "String";
-            }
-            else if (type == typeof(DateTime) || type == typeof(DateTime?))
-            {
-                return "Date";
-            }
-            else
-            {
-                return type.Name;
-            }
-        }
-        public static string ToJavaType(this Type type)
-        {
-            bool nullable;
-            return ToJavaType(type, out nullable);
-        }
+        //    if (type == typeof(char) || type == typeof(char?))
+        //    {
+        //        return "Character";
+        //    }
+        //    else if (type == typeof(int))
+        //    {
+        //        nullable = false;
+        //        return "int";
+        //    }
+        //    else if (type == typeof(int?) || type == typeof(Int32) || type == typeof(Int32?))
+        //    {
+        //        nullable = true;
+        //        return "Integer";
+        //    }
+        //    else if (type == typeof(short) || type == typeof(short?) || type == typeof(Int16) || type == typeof(Int16?))
+        //    {
+        //        nullable = true;
+        //        return "Short";
+        //    }
+        //    else if (type == typeof(Int64) || type == typeof(Int64?))
+        //    {
+        //        nullable = true;
+        //        return "Long";
+        //    }
+        //    else if (type == typeof(string) || type == typeof(String))
+        //    {
+        //        return "String";
+        //    }
+        //    else if (type == typeof(DateTime) || type == typeof(DateTime?))
+        //    {
+        //        return "Date";
+        //    }
+        //    else
+        //    {
+        //        return type.Name;
+        //    }
+        //}
+        //public static string ToJavaType(this Type type)
+        //{
+        //    bool nullable;
+        //    return ToJavaType(type, out nullable);
+        //}
 
     }
 

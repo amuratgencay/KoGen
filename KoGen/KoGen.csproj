@@ -62,7 +62,7 @@
     <Compile Include="Models\DataModels\Annotation.cs" />
     <Compile Include="Models\DataModels\Class.cs" />
     <Compile Include="Models\DataModels\DataType.cs" />
-    <Compile Include="Models\DataModels\PredefinedClasses\PredefinedClass.cs" />
+    <Compile Include="Models\DataModels\Predefined\PredefinedClasses.cs" />
     <Compile Include="Models\DataModels\DataModel.cs" />
     <Compile Include="Models\DataModels\NonAccessModifier.cs" />
     <Compile Include="Models\DataModels\Package.cs" />

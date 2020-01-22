@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 
-namespace KoGen.Models.DataModels.PredefinedClasses
+namespace KoGen.Models.DataModels.Predefined
 {
-    public class PredefinedClass
+    public class PredefinedClasses
     {
         public static readonly Class HvlEntity = new Class
         {
@@ -14,6 +14,20 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "Object",
             Package = Package.DefaultPackage
+        };
+
+        public static readonly Class JavaBoolean = new Class
+        {
+            Name = "Boolean",
+            Package = Package.DefaultPackage,
+            NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final }
+        };
+
+        public static readonly Class JavaBooleanPrimitive = new Class
+        {
+            Name = "boolean",
+            Package = Package.DefaultPackage,
+            NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final }
         };
 
         public static readonly Class JavaString = new Class
@@ -34,7 +48,8 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "char",
             Package = Package.DefaultPackage,
-            Nullable = false            
+            Nullable = false,
+            DefaultValue = '\0'
         };
 
         public static readonly Class JavaNumber = new Class
@@ -56,7 +71,8 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "int",
             Package = Package.DefaultPackage,
-            Nullable = false
+            Nullable = false,
+            DefaultValue = 0,
         };
 
         public static readonly Class JavaLong = new Class
@@ -71,7 +87,8 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "long",
             Package = Package.DefaultPackage,
-            Nullable = false
+            Nullable = false,
+            DefaultValue = 0,
         };
 
         public static readonly Class JavaShort = new Class
@@ -86,7 +103,8 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "short",
             Package = Package.DefaultPackage,
-            Nullable = false
+            Nullable = false,
+            DefaultValue = 0,
         };
 
         public static readonly Class JavaDouble = new Class
@@ -101,7 +119,8 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "double",
             Package = Package.DefaultPackage,
-            Nullable = false
+            Nullable = false,
+            DefaultValue = 0.0,
         };
 
 
@@ -109,6 +128,12 @@ namespace KoGen.Models.DataModels.PredefinedClasses
         {
             Name = "Date",
             Package = "java.util"            
+        };
+
+        public static readonly Class JavaList = new Class
+        {
+            Name = "List",
+            Package = "java.util"
         };
     }
 }
