@@ -1,15 +1,39 @@
 ﻿using KoGen.Extentions;
-using KoGen.Models.DataModels.Predefined;
+using KoGen.Models.ClassMembers;
+using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using KoGen.Models.DataModels.Enum;
 
 namespace KoGen.Models.DataModels
 {
     public class ClassMember
     {
-        public AccessModifier AccessModifier { get; set; }
+        public ClassMember(string name, Class type, object value = null, AccessModifier accessModifier = AccessModifier.Public, params NonAccessModifier[] nonAccessModifiers)
+        {
+            Name = name;
+            Type = type;
+            AccessModifier = accessModifier;
+            NonAccessModifiers = nonAccessModifiers?.ToList() ?? new List<NonAccessModifier>();
+
+            if (value == null && !type.Nullable)
+            {
+                Value = type.DefaultValue;
+                Initialized = true;
+            }
+            else if (value != null)
+            {
+                Value = value;
+                Initialized = true;
+            }
+
+
+
+        }
+
+        public AccessModifier AccessModifier { get; set; } = AccessModifier.Private;
         public List<NonAccessModifier> NonAccessModifiers { get; set; } = new List<NonAccessModifier>();
         public List<Annotation> Annotations { get; set; }
         public bool Initialized { get; private set; }
@@ -21,20 +45,26 @@ namespace KoGen.Models.DataModels
 
         public string GetDeclaration()
         {
-            var res = $@"{AccessModifier.ToString().ToLower()} {NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y)} {Type.Name} {Name}{(Value != null ? $@" = {AssingString(Value)}" : "")};";
+            var res = $@"{AccessModifier.ToString().ToLower()} {NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y)} {Type.Name} {Name}{(Value != null ? $@" = {AssingString()}" : "")};";
             return res;
         }
 
-        private string AssingString(object value)
+        public string AssingString()
         {
-            if (Type == PredefinedClasses.JavaString)
-                return $@"""{value.ToString()}""";
-            else if (Type == PredefinedClasses.JavaBoolean || Type == PredefinedClasses.JavaBooleanPrimitive)
-                return ((bool)value) ? "true" : "false";
-            else if (Type == PredefinedClasses.JavaList)
+            Class type = Type;
+            if(Value is ReferenceValue)
+            {
+                var refValue = Value as ReferenceValue;
+                return refValue.Value;
+            }
+            if (type == JavaString)
+                return $@"""{Value.ToString()}""";
+            else if (type == JavaBoolean || type == JavaBooleanPrimitive)
+                return ((bool)Value) ? "true" : "false";
+            else if (type == JavaList)
             {
                 var res = "{ ";
-                foreach (var item in ((IList)value))
+                foreach (var item in ((IList)Value))
                 {
                     res += item.ToString() + ", ";
                 }
@@ -42,24 +72,19 @@ namespace KoGen.Models.DataModels
                 return res.Replace("  ", " ");
             }
 
-            return value.ToString();
+            return Value.ToString();
         }
 
-        public static ClassMember CreatePublicStaticFinalString(string name, string value)
-        {
-            var res = new ClassMember();
-            res.Name = name;
-            res.Type = PredefinedClasses.JavaString;
-            res.Value = value;
-            res.AccessModifier = AccessModifier.Public;
-            res.NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Static, NonAccessModifier.Final };
-            res.Initialized = true;            
-            return res;
-        }
+        public static ClassMember CreatePublicStaticFinalString(string name, string value) =>
+            new ClassMember(name, JavaString, value, AccessModifier.Public, NonAccessModifier.Static, NonAccessModifier.Final);
+
+        public static ClassMember CreatePublicStaticFinalInt(string name, int value) =>
+            new ClassMember(name, JavaIntPrimitive, value, AccessModifier.Public, NonAccessModifier.Static, NonAccessModifier.Final);
     }
+
     public class Class
     {
-        public Class BaseClass { get; set; } = PredefinedClasses.JavaObject;
+        public Class BaseClass { get; set; } = JavaObject;
         public Package Package { get; set; }
         public bool Nullable { get; set; } = true;
         public object DefaultValue { get; set; } = null;
@@ -70,6 +95,11 @@ namespace KoGen.Models.DataModels
 
         public List<ClassMember> ClassMembers { get; set; } = new List<ClassMember>();
         public List<Annotation> Annotations { get; set; } = new List<Annotation>();
+
+        public ClassMember GetStaticMember(string name)
+        {
+            return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(NonAccessModifier.Static) && x.Name == name);
+        }
 
         public override bool Equals(object obj)
         {
@@ -97,27 +127,31 @@ namespace KoGen.Models.DataModels
             var imports = "\r\n\r\n";
             if (BaseClass != null && BaseClass.Package.ToString() != Package.ToString())
                 imports += $"import {BaseClass.Package};" + "\r\n";
-            imports += Annotations.Select(x => $"import {x.Package};" + "\r\n").Aggregate((x, y) => x + y);
+            imports += Annotations.Count > 0 ? Annotations.Select(x => $"import {x.Package};" + "\r\n").Aggregate((x, y) => x + y) : "";
             if (imports.Length > 4)
                 imports = imports.Remove(imports.Length - 2);
+            if (imports.Contains(Package.DefaultPackage.ToString()))
+            {
+                imports = imports.Replace($"import {Package.DefaultPackage};", "");
+            }
             var res = $@"package {Package};{imports}
 {(Annotations.Count > 0 ? "\r\n" + Annotations.Select(x => x.ToString()).Aggregate((x, y) => x + "\r\n" + y) : "")}
-{AccessModifier.ToString().ToLower()}{(NonAccessModifiers.Count == 0 ? "" : " " + NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y))} class {Name} {(BaseClass != null ? "extends " + BaseClass.Name + " " : "")}{{
+{AccessModifier.ToString().ToLower()}{(NonAccessModifiers.Count == 0 ? "" : " " + NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y))} class {Name} {(BaseClass != null && BaseClass != JavaObject ? "extends " + BaseClass.Name + " " : "")}{{
     
 {(ClassMembers.Count > 0 ? ClassMembers.Select(x => "\t" + x.GetDeclaration() + "\r\n").Aggregate((x, y) => x + y) : "")}
 
 }}";
-            return res;
+            return res.Replace("\n\r\n\r", "");
         }
 
         public static bool operator ==(Class c1, Class c2)
         {
-            return c1.Name == c2.Name;
+            return c1.Name == c2?.Name;
         }
 
         public static bool operator !=(Class c1, Class c2)
         {
-            return c1.Name != c2.Name;
+            return c1.Name != c2?.Name;
         }
     }
 }

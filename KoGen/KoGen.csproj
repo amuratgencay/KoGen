@@ -58,14 +58,15 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\DatabaseModels\ConstraintModels\PrimaryKey.cs" />
-    <Compile Include="Models\DataModels\AccessModifier.cs" />
+    <Compile Include="Models\DataModels\Enum\AccessModifier.cs" />
     <Compile Include="Models\DataModels\Annotation.cs" />
     <Compile Include="Models\DataModels\Class.cs" />
-    <Compile Include="Models\DataModels\DataType.cs" />
+    <Compile Include="Models\DataModels\ReferenceValue.cs" />
+    <Compile Include="Models\DataModels\Predefined\PredefinedAnnotations.cs" />
     <Compile Include="Models\DataModels\Predefined\PredefinedClasses.cs" />
-    <Compile Include="Models\DataModels\DataModel.cs" />
-    <Compile Include="Models\DataModels\NonAccessModifier.cs" />
+    <Compile Include="Models\DataModels\Enum\NonAccessModifier.cs" />
     <Compile Include="Models\DataModels\Package.cs" />
+    <Compile Include="Models\DataModels\Predefined\ValidationAnnotations.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Extentions\StringExtentions.cs" />

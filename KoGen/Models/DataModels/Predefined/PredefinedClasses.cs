@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using KoGen.Models.DataModels.Enum;
+using System.Collections.Generic;
 
 namespace KoGen.Models.DataModels.Predefined
 {
@@ -27,14 +28,15 @@ namespace KoGen.Models.DataModels.Predefined
         {
             Name = "boolean",
             Package = Package.DefaultPackage,
-            NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final }
+            NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final },
+            DefaultValue = false
         };
 
         public static readonly Class JavaString = new Class
         {
             Name = "String",
             Package = Package.DefaultPackage,
-            NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final }
+            NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final },           
         };
 
         public static readonly Class JavaCharacter = new Class

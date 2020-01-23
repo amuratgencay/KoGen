@@ -1,4 +1,4 @@
-﻿namespace KoGen.Models.DataModels
+﻿namespace KoGen.Models.DataModels.Enum
 {
     public enum NonAccessModifier
     {

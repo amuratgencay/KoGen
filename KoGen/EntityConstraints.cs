@@ -2,6 +2,7 @@
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
+using KoGen.Models.DataModels.Enum;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,20 +23,20 @@ namespace KoGen
             AccessModifier = AccessModifier.Public;
             NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Abstract };
 
-            ClassMembers.Add(DataModel.CreatePublicStaticFinalString("TABLE_NAME", Table.Name));
+            ClassMembers.Add(ClassMember.CreatePublicStaticFinalString("TABLE_NAME", Table.Name));
 
             if (Table.Sequence != null)
-                ClassMembers.Add(DataModel.CreatePublicStaticFinalString("SEQ_NAME", Table.Sequence.Name));
+                ClassMembers.Add(ClassMember.CreatePublicStaticFinalString("SEQ_NAME", Table.Sequence.Name));
 
-            ClassMembers.AddRange(Table.Columns.Select(x => DataModel.CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)));
-            ClassMembers.AddRange(Table.UniqueContraints.Select(x => DataModel.CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)));
+            ClassMembers.AddRange(Table.Columns.Select(x => ClassMember.CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)));
+            ClassMembers.AddRange(Table.UniqueContraints.Select(x => ClassMember.CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)));
             ClassMembers.AddRange(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
             {
-                var list = new List<DataModel>();
+                var list = new List<ClassMember>();
                 if (x.Size.Min.HasValue)
-                    list.Add(DataModel.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", x.Size.Min.Value));
+                    list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", x.Size.Min.Value));
                 if (x.Size.Max.HasValue)
-                    list.Add(DataModel.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", x.Size.Max.Value));
+                    list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", x.Size.Max.Value));
                 return list;
             }));
 

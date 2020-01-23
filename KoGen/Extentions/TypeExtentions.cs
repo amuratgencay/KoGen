@@ -10,6 +10,7 @@ namespace KoGen.Extentions
     {
         public static Type FromDBType(string dbType, Size size = null, bool nullable = false)
         {
+
             switch (dbType)
             {
                 case "bigint": return (nullable) ? typeof(long?) : typeof(long);
@@ -31,6 +32,9 @@ namespace KoGen.Extentions
         }
         private static Dictionary<Type, Class> _javaTypeDictionary = new Dictionary<Type, Class>
         {
+            {typeof(bool), PredefinedClasses.JavaBoolean},
+            {typeof(bool?), PredefinedClasses.JavaBooleanPrimitive},
+
             {typeof(char), PredefinedClasses.JavaCharPrimitive },
             {typeof(char?), PredefinedClasses.JavaCharacter },
 
@@ -38,19 +42,13 @@ namespace KoGen.Extentions
 
             {typeof(short), PredefinedClasses.JavaShortPrimitive },
             {typeof(short?), PredefinedClasses.JavaShort },
-            {typeof(Int16), PredefinedClasses.JavaShort},
-            {typeof(Int16?), PredefinedClasses.JavaShort},
 
             {typeof(int), PredefinedClasses.JavaIntPrimitive },
             {typeof(int?), PredefinedClasses.JavaInteger },
-            {typeof(Int32), PredefinedClasses.JavaInteger },
-            {typeof(Int32?), PredefinedClasses.JavaInteger },
 
 
             {typeof(long), PredefinedClasses.JavaLongPrimitive },
-            {typeof(int?), PredefinedClasses.JavaLong },
-            {typeof(Int64), PredefinedClasses.JavaLong },
-            {typeof(Int64?), PredefinedClasses.JavaLong },
+            {typeof(long?), PredefinedClasses.JavaLong },
 
 
             {typeof(DateTime), PredefinedClasses.JavaDate },

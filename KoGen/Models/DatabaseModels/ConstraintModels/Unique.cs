@@ -11,6 +11,11 @@ namespace KoGen.Models.DatabaseModels.ConstraintModels
 
             return false;
         }
+
+        public override int GetHashCode()
+        {
+            return -1952516548 + EqualityComparer<List<Column>>.Default.GetHashCode(Columns);
+        }
     }
 
 }

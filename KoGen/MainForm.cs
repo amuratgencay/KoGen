@@ -22,7 +22,7 @@ namespace KoGen
         }
         List<Table> _tableList;
         Dictionary<string, EntityConstraintsClass> entityConstraintDic;
-        Dictionary<string, Entity> entityDic;
+        Dictionary<string, EntityClass> entityDic;
         private void Form1_Load(object sender, EventArgs e)
         {
             _tableList = new List<Table>();
@@ -213,7 +213,7 @@ namespace KoGen
         private void btnGenerate_Click(object sender, EventArgs e)
         {
             entityConstraintDic = new Dictionary<string, EntityConstraintsClass>();
-            entityDic = new Dictionary<string, Entity>();
+            entityDic = new Dictionary<string, EntityClass>();
             foreach (var table in _tableList)
             {
                 table.Schema = "KOVAN_" + txtModuleName.Text.ToUpper(System.Globalization.CultureInfo.InvariantCulture);
@@ -221,8 +221,7 @@ namespace KoGen
                 entityConstraintDic.Add(ec.Name, ec);
                 lstConstraints.Items.Add(ec.Name);
 
-                var entity = new Entity { Table = table };
-                var entityClass = new EntityClass(table, "workshop", ec);
+                var entity = new EntityClass(table, "workshop", ec);
                 entityDic.Add(entity.Name, entity);
                 lstEntities.Items.Add(entity.Name);
             }
@@ -235,7 +234,7 @@ namespace KoGen
 
         private void lstEntities_SelectedIndexChanged(object sender, EventArgs e)
         {
-            rtbEntities.Text = entityDic[lstEntities.Text].ToString();
+            rtbEntities.Text = entityDic[lstEntities.Text].ToJavaFile();
         }
 
     }
