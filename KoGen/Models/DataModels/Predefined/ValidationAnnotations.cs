@@ -14,8 +14,8 @@ namespace KoGen.Models.DataModels.Predefined
             Package = "javax.validation.constraints.Size",
             Parameters = new Dictionary<string, ClassMember>
             {
-                {"min", new ClassMember("min", JavaIntPrimitive, AccessModifier.Public) },
-                {"max", new ClassMember("max", JavaIntPrimitive, AccessModifier.Public) },
+                {"min", new ClassMember("min", JavaIntPrimitive) },
+                {"max", new ClassMember("max", JavaIntPrimitive) },
             }
         };
 

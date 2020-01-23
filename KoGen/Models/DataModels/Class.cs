@@ -74,7 +74,6 @@ namespace KoGen.Models.DataModels
 
             return Value.ToString();
         }
-
         public static ClassMember CreatePublicStaticFinalString(string name, string value) =>
             new ClassMember(name, JavaString, value, AccessModifier.Public, NonAccessModifier.Static, NonAccessModifier.Final);
 
@@ -128,12 +127,13 @@ namespace KoGen.Models.DataModels
             if (BaseClass != null && BaseClass.Package.ToString() != Package.ToString())
                 imports += $"import {BaseClass.Package};" + "\r\n";
             imports += Annotations.Count > 0 ? Annotations.Select(x => $"import {x.Package};" + "\r\n").Aggregate((x, y) => x + y) : "";
-            if (imports.Length > 4)
-                imports = imports.Remove(imports.Length - 2);
+            
             if (imports.Contains(Package.DefaultPackage.ToString()))
             {
                 imports = imports.Replace($"import {Package.DefaultPackage};", "");
             }
+            
+
             var res = $@"package {Package};{imports}
 {(Annotations.Count > 0 ? "\r\n" + Annotations.Select(x => x.ToString()).Aggregate((x, y) => x + "\r\n" + y) : "")}
 {AccessModifier.ToString().ToLower()}{(NonAccessModifiers.Count == 0 ? "" : " " + NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y))} class {Name} {(BaseClass != null && BaseClass != JavaObject ? "extends " + BaseClass.Name + " " : "")}{{
@@ -141,7 +141,7 @@ namespace KoGen.Models.DataModels
 {(ClassMembers.Count > 0 ? ClassMembers.Select(x => "\t" + x.GetDeclaration() + "\r\n").Aggregate((x, y) => x + y) : "")}
 
 }}";
-            return res.Replace("\n\r\n\r", "");
+            return res.Replace("\n\r\n\r", "\n\r");
         }
 
         public static bool operator ==(Class c1, Class c2)

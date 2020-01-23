@@ -49,8 +49,8 @@
     <Compile Include="Models\DatabaseModels\Column.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\ForeignKey.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\ConstraintBase.cs" />
-    <Compile Include="Entity.cs" />
-    <Compile Include="EntityConstraints.cs" />
+    <Compile Include="EntityClass.cs" />
+    <Compile Include="EntityConstraintsClass.cs" />
     <Compile Include="MainForm.cs">
       <SubType>Form</SubType>
     </Compile>

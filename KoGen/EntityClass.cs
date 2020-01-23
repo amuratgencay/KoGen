@@ -1,14 +1,9 @@
 ﻿using KoGen.Extentions;
 using static KoGen.Models.DataModels.Predefined.PredefinedAnnotations;
 using KoGen.Models.DatabaseModels;
-using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Predefined;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using KoGen.Models.DataModels.Enum;
 
 namespace KoGen
@@ -33,10 +28,10 @@ namespace KoGen
                 .SetParameter("schema", table.Schema)
                 .SetParameter("indexes", table.UniqueContraints.Select(u =>
                     Index()
-                    .SetParameter("name", ReferenceValue.FromStaticMember(eConsts, $"COL_{u.Name}"))
+                    .SetParameter("name", ReferenceValue.FromStaticMember(eConsts, $"{u.Name}"))
                     .SetParameter("unique", true)
                     .SetParameter("columnList", u.Columns.Select(
-                        x => ReferenceValue.FromStaticMember(eConsts, x.Name))
+                        x => ReferenceValue.FromStaticMember(eConsts, $"COLUMN_{x.Name}"))
                     .ToList()))
                 .ToList()));
 

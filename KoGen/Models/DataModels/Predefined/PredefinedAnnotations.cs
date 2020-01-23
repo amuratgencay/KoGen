@@ -20,11 +20,11 @@ namespace KoGen.Models.DataModels.Predefined
             Parameters = new Dictionary<string, ClassMember>
             {
            {     "name",
-                new ClassMember("name", JavaString, AccessModifier.Public)
+                new ClassMember("name", JavaString)
             },
-            { "nullable", new ClassMember("nullable", JavaBooleanPrimitive, true, AccessModifier.Public) },
-            { "insertable", new ClassMember("insertable", JavaBooleanPrimitive, true, AccessModifier.Public) },
-            { "updatable", new ClassMember("updatable", JavaBooleanPrimitive, true, AccessModifier.Public) },
+            { "nullable", new ClassMember("nullable", JavaBooleanPrimitive, true) },
+            { "insertable", new ClassMember("insertable", JavaBooleanPrimitive, true) },
+            { "updatable", new ClassMember("updatable", JavaBooleanPrimitive, true) },
 
         }
         };
@@ -35,9 +35,9 @@ namespace KoGen.Models.DataModels.Predefined
             Package = "javax.persistence.Index",
             Parameters = new Dictionary<string, ClassMember>
             {
-                { "name", new ClassMember("name", JavaString, AccessModifier.Public) },
-                { "columnList", new ClassMember("columnList", JavaList, AccessModifier.Public) },
-                { "unique", new ClassMember("unique", JavaBoolean, false, AccessModifier.Public) },
+                { "name", new ClassMember("name", JavaString) },
+                { "columnList", new ClassMember("columnList", JavaList) },
+                { "unique", new ClassMember("unique", JavaBoolean, false) },
             }
         };
 
@@ -47,9 +47,9 @@ namespace KoGen.Models.DataModels.Predefined
             Package = "javax.persistence.Table",
             Parameters = new Dictionary<string, ClassMember>
             {
-               {"name", new ClassMember("name", JavaString, AccessModifier.Public) },
-               {"schema", new ClassMember("schema", JavaString, AccessModifier.Public) },
-               {"indexes", new ClassMember("indexes", JavaList, AccessModifier.Public) }
+               {"name", new ClassMember("name", JavaString) },
+               {"schema", new ClassMember("schema", JavaString) },
+               {"indexes", new ClassMember("indexes", JavaList) }
             }
         };
 
@@ -59,7 +59,7 @@ namespace KoGen.Models.DataModels.Predefined
             Package = "tr.com.havelsan.nf.hibernate.annotations.HvlEntitySequence",
             Parameters = new Dictionary<string, ClassMember>
             {
-                {"name", new ClassMember("name", JavaString, AccessModifier.Public) }
+                {"name", new ClassMember("name", JavaString) }
             }
         };
 
