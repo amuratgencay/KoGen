@@ -10,7 +10,7 @@ namespace KoGen
 {
     public class EntityClass : Class
     {
-        
+
         public EntityClass(EntityConstraintsClass eConsts, string module)
         {
             Name = eConsts.TableName.ToPascalCase() + "Entity";
@@ -23,7 +23,7 @@ namespace KoGen
             Annotations.Add(Table()
                 .SetParameter("name", eConsts.TableNameRef)
                 .SetParameter("schema", eConsts.TableSchema)
-                .SetParameter("indexes", eConsts.UniqueConstraintsRef.Select(u=> 
+                .SetParameter("indexes", eConsts.UniqueConstraintsRef.Select(u =>
                     Index()
                         .SetParameter("name", u.Name)
                         .SetParameter("unique", true)
@@ -35,6 +35,13 @@ namespace KoGen
             {
                 Annotations.Add(HvlEntitySequence().SetParameter("name", eConsts.TableSequenceRef));
             }
+
+            ClassMembers.AddRange(eConsts.Table.Columns.Select(col =>
+            {
+                var cm = new ClassMember(col.Name.ToCamelCase(), col.Type.ToJavaType(), null, AccessModifier.Private);
+                cm.Annotations.Add(Column().SetParameter("name", ReferenceValue.FromStaticMember(eConsts, $"COLUMN_{col.Name}")));
+                return cm;
+            }));
         }
     }
 

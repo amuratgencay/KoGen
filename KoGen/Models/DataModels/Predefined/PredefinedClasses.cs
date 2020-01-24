@@ -29,6 +29,7 @@ namespace KoGen.Models.DataModels.Predefined
             Name = "boolean",
             Package = Package.DefaultPackage,
             NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Final },
+            Nullable = false,
             DefaultValue = false
         };
 

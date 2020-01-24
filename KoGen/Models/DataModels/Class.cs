@@ -28,38 +28,47 @@ namespace KoGen.Models.DataModels
                 Value = value;
                 Initialized = true;
             }
-
+            DefaultValue = Value;
 
 
         }
-
+        
         public AccessModifier AccessModifier { get; set; } = AccessModifier.Private;
         public List<NonAccessModifier> NonAccessModifiers { get; set; } = new List<NonAccessModifier>();
-        public List<Annotation> Annotations { get; set; }
+        public List<Annotation> Annotations { get; set; } = new List<Annotation>();
         public bool Initialized { get; private set; }
         public string Name { get; set; }
         public Class Owner { get; set; }
         public Class Type { get; set; }
         public object Value { get; set; }
+        public readonly object DefaultValue;
         public string Comment { get; set; }
 
         public string GetDeclaration()
         {
-            var res = $@"{AccessModifier.ToString().ToLower()} {NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y)} {Type.Name} {Name}{(Value != null ? $@" = {AssingString()}" : "")};";
+            var res = "";
+            foreach (var item in Annotations)
+            {
+                res += item + "\r\n\t";
+            }
+            res += $@"{AccessModifier.ToString().ToLower()}{(NonAccessModifiers.Count > 0 ? " " + NonAccessModifiers.Select(x => x.ToString().ToLower()).Aggregate((x, y) => x + " " + y) : "")} {Type.Name} {Name}{(Value != Type.DefaultValue ? $@" = {AssingString()}" : "")};";
+
             return res;
         }
 
         public string AssingString()
         {
             Class type = Type;
-            if(Value is ReferenceValue)
+            if (Value is ReferenceValue)
             {
                 var refValue = Value as ReferenceValue;
                 return refValue.Value;
             }
             if (type == JavaString)
                 return $@"""{Value.ToString()}""";
-            else if (type == JavaBoolean || type == JavaBooleanPrimitive)
+            else if (type == JavaBoolean )
+                return  Value!= null ? (((bool)Value) ? "true" : "false") : "";
+            else if (type == JavaBooleanPrimitive)
                 return ((bool)Value) ? "true" : "false";
             else if (type == JavaList)
             {
@@ -138,12 +147,12 @@ namespace KoGen.Models.DataModels
             if (BaseClass != null && BaseClass.Package.ToString() != Package.ToString())
                 imports += $"import {BaseClass.Package};" + "\r\n";
             imports += Annotations.Count > 0 ? Annotations.Select(x => $"import {x.Package};" + "\r\n").Aggregate((x, y) => x + y) : "";
-            
+
             if (imports.Contains(Package.DefaultPackage.ToString()))
             {
                 imports = imports.Replace($"import {Package.DefaultPackage};", "");
             }
-            
+
 
             var res = $@"package {Package};{imports}
 {(Annotations.Count > 0 ? "\r\n" + Annotations.Select(x => x.ToString()).Aggregate((x, y) => x + "\r\n" + y) : "")}
@@ -155,7 +164,7 @@ namespace KoGen.Models.DataModels
             return res.Replace("\n\r\n\r", "\n\r");
         }
 
-        
+
         public static bool operator ==(Class c1, Class c2)
         {
             return c1.Name == c2?.Name;

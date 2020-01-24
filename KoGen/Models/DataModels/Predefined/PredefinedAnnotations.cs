@@ -7,6 +7,7 @@ namespace KoGen.Models.DataModels.Predefined
 {
     public class PredefinedAnnotations
     {
+
         public static Annotation Entity() => new Annotation
         {
             Name = "Entity",
@@ -22,7 +23,7 @@ namespace KoGen.Models.DataModels.Predefined
            {     "name",
                 new ClassMember("name", JavaString)
             },
-            { "nullable", new ClassMember("nullable", JavaBooleanPrimitive, true) },
+            { "nullable", new ClassMember("nullable", JavaBooleanPrimitive, true)},
             { "insertable", new ClassMember("insertable", JavaBooleanPrimitive, true) },
             { "updatable", new ClassMember("updatable", JavaBooleanPrimitive, true) },
 

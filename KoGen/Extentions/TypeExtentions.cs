@@ -20,6 +20,7 @@ namespace KoGen.Extentions
                 case "boolean": return (nullable) ? typeof(bool?) : typeof(bool);
                 case "date": return (nullable) ? typeof(DateTime?) : typeof(DateTime);
                 case "integer": return (nullable) ? typeof(int?) : typeof(int);
+                case "smallint": return (nullable) ? typeof(short?) : typeof(short);
                 case "numeric":
                     if (size.Max < 5)
                         return (nullable) ? typeof(short?) : typeof(short);
@@ -52,6 +53,7 @@ namespace KoGen.Extentions
 
 
             {typeof(DateTime), PredefinedClasses.JavaDate },
+            {typeof(DateTime?), PredefinedClasses.JavaDate },
 
             {typeof(List<>), PredefinedClasses.JavaList},
 
