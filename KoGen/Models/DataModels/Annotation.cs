@@ -23,7 +23,8 @@ namespace KoGen.Models.ClassMembers
                 foreach (var key in Parameters.Keys)
                 {
                     var assingStr = Parameters[key].AssingString();
-                    res += !string.IsNullOrEmpty(assingStr) ?( key + " = " + Parameters[key].AssingString() + ", ") : "";
+
+                    res += !string.IsNullOrEmpty(assingStr) && (assingStr != "{}") ? ( key + " = " + Parameters[key].AssingString() + ", ") : "";
                 }
                 res = res.Remove(res.Length - 2);
                 res += ")";

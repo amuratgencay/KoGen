@@ -221,7 +221,7 @@ namespace KoGen
                 entityConstraintDic.Add(ec.Name, ec);
                 lstConstraints.Items.Add(ec.Name);
 
-                var entity = new EntityClass(table, "workshop", ec);
+                var entity = new EntityClass(ec, "workshop");
                 entityDic.Add(entity.Name, entity);
                 lstEntities.Items.Add(entity.Name);
             }

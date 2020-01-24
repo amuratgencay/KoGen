@@ -18,6 +18,13 @@ namespace KoGen.Models.DataModels
             if (cm == null) return null;
             return new ReferenceValue($"{c.Name}.{cm.Name}", true, c);
         }
+
+        public static ReferenceValue FromStaticMemberByValue(Class c, object value)
+        {
+            ClassMember cm = c.GetStaticMemberByValue(value);
+            if (cm == null) return null;
+            return new ReferenceValue($"{c.Name}.{cm.Name}", true, c);
+        }
         public string Value { get; set; }
         public bool StaticMember { get; set; }
         public Class Clazz { get; set; }

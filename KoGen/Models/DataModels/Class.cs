@@ -63,13 +63,18 @@ namespace KoGen.Models.DataModels
                 return ((bool)Value) ? "true" : "false";
             else if (type == JavaList)
             {
-                var res = "{ ";
-                foreach (var item in ((IList)Value))
+                var ilist = (IList)Value;
+                if (ilist.Count > 0)
                 {
-                    res += item.ToString() + ", ";
+                    var res = "{ ";
+                    foreach (var item in ilist)
+                    {
+                        res += item.ToString() + ", ";
+                    }
+                    res = res.Remove(res.Length - 2) + " }";
+                    return res.Replace("  ", " ");
                 }
-                res = res.Remove(res.Length - 2) + " }";
-                return res.Replace("  ", " ");
+                return "{}";
             }
 
             return Value.ToString();
@@ -99,6 +104,12 @@ namespace KoGen.Models.DataModels
         {
             return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(NonAccessModifier.Static) && x.Name == name);
         }
+
+        public ClassMember GetStaticMemberByValue(object value)
+        {
+            return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(NonAccessModifier.Static) && x.Value == value);
+        }
+
 
         public override bool Equals(object obj)
         {
@@ -144,6 +155,7 @@ namespace KoGen.Models.DataModels
             return res.Replace("\n\r\n\r", "\n\r");
         }
 
+        
         public static bool operator ==(Class c1, Class c2)
         {
             return c1.Name == c2?.Name;

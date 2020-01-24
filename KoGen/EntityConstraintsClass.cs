@@ -1,5 +1,6 @@
 ﻿using KoGen.Extentions;
 using KoGen.Models.DatabaseModels;
+using static KoGen.Models.DataModels.ReferenceValue;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Enum;
@@ -11,16 +12,26 @@ using System.Threading.Tasks;
 
 namespace KoGen
 {
+    public class UniqueConstraintClass
+    {
+        public ReferenceValue Name { get; set; }
+        public List<ReferenceValue> ColumnList { get; set; }
+    }
     public class EntityConstraintsClass : Class
     {
         public Table Table { get; set; }
+        public string TableName => Table.SafeName;
+        public string TableSchema => Table.Schema;
+        public ReferenceValue TableNameRef => FromStaticMember(this, "TABLE_NAME");
+        public ReferenceValue TableSequenceRef => ClassMembers.Any(x => x.Name == "TABLE_SEQ_NAME") ? FromStaticMember(this, "TABLE_SEQ_NAME") : null;
+        public List<UniqueConstraintClass> UniqueConstraintsRef => Table.UniqueContraints.Select(x => new UniqueConstraintClass { Name = FromStaticMemberByValue(this, $"{x.Name}"), ColumnList = x.Columns.Select(z => GetColumn($"{z.Name}")).ToList() }).ToList();
+        public ReferenceValue GetColumn(string name) => FromStaticMemberByValue(this, name);
 
         public EntityConstraintsClass(Table table, string module)
         {
             Table = table;
             Name = Table.SafeName.ToPascalCase() + "Constraints";
             Package = $@"havelsan.kovan.{module}.common.constraints";
-            AccessModifier = AccessModifier.Public;
             NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Abstract };
 
             ClassMembers.Add(ClassMember.CreatePublicStaticFinalString("TABLE_NAME", Table.Name));
@@ -44,35 +55,4 @@ namespace KoGen
 
 
     }
-    //    public class EntityConstraints
-    //    {
-    //        public string Name => Table.SafeName.ToPascalCase() + "Constraints";
-    //        public Table Table { get; set; }
-    //        public string Package => $@"havelsan.kovan.{Table.Schema.ToLower(System.Globalization.CultureInfo.InvariantCulture).Replace("kovan_", "")}.common.constraints";
-    //        public override string ToString()
-    //        {
-    //            var unique = "";
-    //            if (Table.Columns.Any(x => x.Constraints.Any(y => y is Unique)))
-    //            {
-    //                unique = Table.Columns.SelectMany(x => x.Constraints.Where(y => y is Unique).Select(z => "\tpublic static final String " + (z as Unique).Name + $@" = ""{(z as Unique).Name}"";" + "\r\n")).Distinct().Aggregate((x, y) => x + y);
-    //            }
-    //            var result = $@"
-    //package {Package};
-
-    //public abstract class {Table.SafeName.ToPascalCase()}Constraints {{
-
-    //            public static final String TABLE_NAME = ""{Table.Name}"";
-    //            public static final String TABLE_SEQ_NAME = ""{Table.Columns.FirstOrDefault(x => x.Sequence != null)?.Sequence.Name ?? Table.Name}_SEQ"";
-
-    //{Table.Columns.Select(x => "\tpublic static final String COLUMN_" + x.Name + $@" = ""{x.Name}"";" + "\r\n").Aggregate((x, y) => x + y)}
-
-    //{Table.Columns.Where(x => x.Size.HasValue).Select(x => "\tpublic static final int " + x.Name + $@"_SIZE_MAX = {x.Size.Value};" + "\r\n").Aggregate((x, y) => x + y)}
-
-    //{unique}
-
-    //}}
-    //";
-    //            return result;
-    //        }
-    //    }
 }

@@ -10,35 +10,30 @@ namespace KoGen
 {
     public class EntityClass : Class
     {
-        public Table Table { get; set; }
-        public EntityClass(Table table, string module, EntityConstraintsClass eConsts)
+        
+        public EntityClass(EntityConstraintsClass eConsts, string module)
         {
-            Table = table;
-
-            Name = Table.SafeName.ToPascalCase() + "Entity";
+            Name = eConsts.TableName.ToPascalCase() + "Entity";
             Package = $@"havelsan.kovan.{module}.service.entity";
-            AccessModifier = AccessModifier.Public;
 
             BaseClass = PredefinedClasses.HvlEntity;
 
             Annotations.Add(Entity());
 
             Annotations.Add(Table()
-                .SetParameter("name", ReferenceValue.FromStaticMember(eConsts, "TABLE_NAME"))
-                .SetParameter("schema", table.Schema)
-                .SetParameter("indexes", table.UniqueContraints.Select(u =>
+                .SetParameter("name", eConsts.TableNameRef)
+                .SetParameter("schema", eConsts.TableSchema)
+                .SetParameter("indexes", eConsts.UniqueConstraintsRef.Select(u=> 
                     Index()
-                    .SetParameter("name", ReferenceValue.FromStaticMember(eConsts, $"{u.Name}"))
-                    .SetParameter("unique", true)
-                    .SetParameter("columnList", u.Columns.Select(
-                        x => ReferenceValue.FromStaticMember(eConsts, $"COLUMN_{x.Name}"))
-                    .ToList()))
-                .ToList()));
+                        .SetParameter("name", u.Name)
+                        .SetParameter("unique", true)
+                        .SetParameter("columnList", u.ColumnList)).ToList()
 
-            if (eConsts.ClassMembers.Any(x => x.Name == "TABLE_SEQ_NAME"))
+                ));
+
+            if (eConsts.TableSequenceRef != null)
             {
-                Annotations.Add(HvlEntitySequence()
-                    .SetParameter("name", ReferenceValue.FromStaticMember(eConsts, "TABLE_SEQ_NAME")));
+                Annotations.Add(HvlEntitySequence().SetParameter("name", eConsts.TableSequenceRef));
             }
         }
     }
