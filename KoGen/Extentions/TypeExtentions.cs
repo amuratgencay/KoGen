@@ -3,6 +3,7 @@ using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Predefined;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 
 namespace KoGen.Extentions
 {
@@ -110,5 +111,16 @@ namespace KoGen.Extentions
         //}
 
     }
+
+    public static class NullableExtentions
+    {
+
+        public static void IfPresent<T>(this Nullable<T> nullable, Action<T> action) where T : struct
+        {
+            if (nullable.HasValue)
+                action.Invoke(nullable.Value);
+        }
+    }
+
 
 }

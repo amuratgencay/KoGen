@@ -24,9 +24,12 @@ namespace KoGen
         public string TableSchema => Table.Schema;
         public ReferenceValue TableNameRef => FromStaticMember(this, "TABLE_NAME");
         public ReferenceValue TableSequenceRef => ClassMembers.Any(x => x.Name == "TABLE_SEQ_NAME") ? FromStaticMember(this, "TABLE_SEQ_NAME") : null;
-        public List<UniqueConstraintClass> UniqueConstraintsRef => Table.UniqueContraints.Select(x => new UniqueConstraintClass { Name = FromStaticMemberByValue(this, $"{x.Name}"), ColumnList = x.Columns.Select(z => GetColumn($"{z.Name}")).ToList() }).ToList();
-        public ReferenceValue GetColumn(string name) => FromStaticMemberByValue(this, name);
-
+        public List<UniqueConstraintClass> UniqueConstraintsRef => Table.UniqueContraints.Select(x => new UniqueConstraintClass { Name = FromStaticMemberByValue(this, $"{x.Name}"), ColumnList = x.Columns.Select(z => GetColumnByValue($"{z.Name}")).ToList() }).ToList();
+        public ReferenceValue GetColumnByValue(string value) => FromStaticMemberByValue(this, value);
+        public ReferenceValue GetColumnByName(string name) => FromStaticMember(this, name);
+        public ReferenceValue GetColumnSizeMax(Column column) => GetColumnByName($"{column.Name}_SIZE_MIN");
+        public ReferenceValue GetColumnSizeMin(Column column) => GetColumnByName($"{column.Name}_SIZE_MAX");
+        public ReferenceValue GetColumnName(Column column) => GetColumnByName($"COLUMN_{column.Name}");
         public EntityConstraintsClass(Table table, string module)
         {
             Table = table;
@@ -44,10 +47,8 @@ namespace KoGen
             ClassMembers.AddRange(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
             {
                 var list = new List<ClassMember>();
-                if (x.Size.Min.HasValue)
-                    list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", x.Size.Min.Value));
-                if (x.Size.Max.HasValue)
-                    list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", x.Size.Max.Value));
+                x.Size.Min.IfPresent(min => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", min)));
+                x.Size.Max.IfPresent(max => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", max)));
                 return list;
             }));
 

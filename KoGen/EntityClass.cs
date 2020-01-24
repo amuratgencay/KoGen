@@ -1,5 +1,6 @@
 ﻿using KoGen.Extentions;
 using static KoGen.Models.DataModels.Predefined.PredefinedAnnotations;
+using static KoGen.Models.DataModels.Predefined.ValidationAnnotations;
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Predefined;
@@ -39,7 +40,15 @@ namespace KoGen
             ClassMembers.AddRange(eConsts.Table.Columns.Select(col =>
             {
                 var cm = new ClassMember(col.Name.ToCamelCase(), col.Type.ToJavaType(), null, AccessModifier.Private);
-                cm.Annotations.Add(Column().SetParameter("name", ReferenceValue.FromStaticMember(eConsts, $"COLUMN_{col.Name}")));
+                cm.Annotations.Add(Column().SetParameter("name", eConsts.GetColumnName(col)));
+                if (col.Size != null)
+                {
+                    var sizeAnnotation = Size();
+                    col.Size.Min.IfPresent(min => sizeAnnotation.SetParameter("min", eConsts.GetColumnSizeMin(col)));
+                    col.Size.Max.IfPresent(max => sizeAnnotation.SetParameter("min", eConsts.GetColumnSizeMin(col)));
+
+                    cm.Annotations.Add(sizeAnnotation);
+                }
                 return cm;
             }));
         }
