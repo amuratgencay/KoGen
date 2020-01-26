@@ -1,6 +1,7 @@
 ﻿using KoGen.Extentions;
 using KoGen.Models.ClassMembers;
 using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
+using static KoGen.Extentions.StringExtentions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,27 +38,27 @@ namespace KoGen.Models.DataModels
         {
             return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(Static) && x.Value == value);
         }
-        private List<Wrapper> GetRelations => 
+        private List<Wrapper> GetRelations =>
             new List<Wrapper>()
                 .AddIfTrue((BaseClass != null && BaseClass.Package.ToString() != Package.ToString()), BaseClass)
                 .AddList(Annotations)
                 .AddList(ClassMembers.SelectMany(x => x.Annotations))
                 .AddList(ClassMembers.Select(x => x.Type));
-        
+
         private List<Package> GetPackages =>
             GetRelations
             .Where(x => x.Package != Package.DefaultPackage)
             .Select(x => x.Package)
             .ToList();
         private string PackageString =>
-            $"package {Package};\r\n\r\n";
-        private string GetImportsString => 
+            $"package {Package};{DoubleNewLine}";
+        private string GetImportsString =>
             GetPackages
-            .AggregateDistinct(x => $"import {x};", "\r\n", "\r\n") + "\r\n";
+            .AggregateDistinct(x => $"import {x};", NewLine, "", NewLine);
 
         private string GetAnnotationsString =>
             Annotations
-            .Aggregate(x => x.ToString(), "\r\n", "\r\n", "\r\n");
+            .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
 
         private string GetAccessModifierString =>
             AccessModifier
@@ -70,7 +71,7 @@ namespace KoGen.Models.DataModels
             (BaseClass != null && BaseClass != JavaObject) ? $"extends {BaseClass.Name} " : "";
 
         private string ClassMembersString =>
-            ClassMembers.Aggregate(x => "\t" + x.GetDeclaration(), "\r\n\r\n", "\r\n\r\n") + "\r\n\r\n";
+            ClassMembers.Aggregate(x => "\t" + x.GetDeclaration(), DoubleNewLine, DoubleNewLine, DoubleNewLine);
 
         public virtual string ToJavaFile()
         {
@@ -79,7 +80,7 @@ namespace KoGen.Models.DataModels
                     + $"{GetAnnotationsString}"
                     + $"{GetAccessModifierString}{GetNonAccessModifiersString} class {Name} {BaseClassString}{{"
                     + $"{ClassMembersString}"
-                    + $"}}").ReplaceAll("\n\r\n\r", "\n\r");
+                    + $"}}");
         }
 
         #region Constructors

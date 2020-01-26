@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DBFile.cs" />
     <Compile Include="Extentions\ListExtentions.cs" />
     <Compile Include="Extentions\NullableExtentions.cs" />
     <Compile Include="Models\DatabaseModels\Column.cs" />

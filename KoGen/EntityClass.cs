@@ -67,7 +67,7 @@ namespace KoGen
     //    {
     //        public string Name => Table.SafeName.ToPascalCase() + "Entity";
     //        public Table Table { get; set; }
-    //        public string Package => $@"package havelsan.kovan.{Table.Schema.ToLower(System.Globalization.CultureInfo.InvariantCulture).Replace("kovan_", "")}.service.entity;";
+    //        public string Package => $@"package havelsan.kovan.{Table.Schema.ToLowerEn().Replace("kovan_", "")}.service.entity;";
 
     //        public string GetImports()
     //        {
@@ -80,12 +80,12 @@ namespace KoGen
     //            if (Table.Columns.Any(x => !x.Nullable))
     //                res += "import javax.validation.constraints.NotNull;\r\n";
 
-    //            res += $@"import havelsan.kovan.{Table.Schema.ToLower(System.Globalization.CultureInfo.InvariantCulture).Replace("kovan_", "")}.common.constraints.{Table.SafeName.ToPascalCase()}Constraints.*;" + "\r\n";
+    //            res += $@"import havelsan.kovan.{Table.Schema.ToLowerEn().Replace("kovan_", "")}.common.constraints.{Table.SafeName.ToPascalCase()}Constraints.*;" + "\r\n";
 
     //            if (Table.Columns.Any(x => x.Constraints.Any(y => y is ForeignKey)))
     //                foreach (var fk in Table.Columns.SelectMany(x => x.Constraints.Where(y => y is ForeignKey && (y as ForeignKey).Column.Name == x.Name).Select(z => z as ForeignKey)))
     //                {
-    //                    res += $@"import havelsan.kovan.{Table.Schema.ToLower(System.Globalization.CultureInfo.InvariantCulture).Replace("kovan_", "")}.common.constraints.{fk.ReferenceColumn.Table.SafeName.ToPascalCase()}Constraints;" + "\r\n";
+    //                    res += $@"import havelsan.kovan.{Table.Schema.ToLowerEn().Replace("kovan_", "")}.common.constraints.{fk.ReferenceColumn.Table.SafeName.ToPascalCase()}Constraints;" + "\r\n";
     //                }
     //            return res;
     //        }

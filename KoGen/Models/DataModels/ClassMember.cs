@@ -1,6 +1,7 @@
 ﻿using KoGen.Extentions;
 using KoGen.Models.ClassMembers;
 using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
+using static KoGen.Extentions.StringExtentions;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -45,7 +46,7 @@ namespace KoGen.Models.DataModels
 
         private string GetAnnotationsString =>
             Annotations
-            .Aggregate(x => x.ToString(), "\r\n\t", "", "\r\n\t");
+            .Aggregate(x => x.ToString(), NewLineTab, "", NewLineTab);
 
         private string GetAccessModifierString =>
             AccessModifier

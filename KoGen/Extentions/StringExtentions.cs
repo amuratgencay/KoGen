@@ -8,8 +8,8 @@ namespace KoGen.Extentions
     {
         public static string ToPascalCase(this string value)
         {
-            return value.ToUpper(System.Globalization.CultureInfo.InvariantCulture).Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries)
-                .Select(x => x[0] + x.Substring(1).ToLower(System.Globalization.CultureInfo.InvariantCulture))
+            return value.ToUpperEn().Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries)
+                .Select(x => x[0] + x.Substring(1).ToLowerEn())
                 .Aggregate((x, y) => x + y);
         }
 
@@ -17,21 +17,25 @@ namespace KoGen.Extentions
         {
             int index = 0;
             var result = "";
-            foreach (var item in value.ToUpper(System.Globalization.CultureInfo.InvariantCulture).Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries))
+            foreach (var item in value.ToUpperEn().Split(new char[] { '_' }, StringSplitOptions.RemoveEmptyEntries))
             {
                 if (index > 0)
                 {
-                    result += item[0] + item.Substring(1).ToLower(System.Globalization.CultureInfo.InvariantCulture);
+                    result += item[0] + item.Substring(1).ToLowerEn();
                 }
                 else
                 {
-                    result += item.ToLower(System.Globalization.CultureInfo.InvariantCulture);
+                    result += item.ToLowerEn();
                 }
                 index++;
             };
 
             return result;
         }
+        public static string ToLowerEn(this string value) => value.ToLower(System.Globalization.CultureInfo.InvariantCulture);
+        public static string ToUpperEn(this string value) => value.ToUpper(System.Globalization.CultureInfo.InvariantCulture);
+
+
         public static string GetSlice(this string value, string start, string end, int index = -1)
         {
             if (index == -1)
@@ -82,6 +86,11 @@ namespace KoGen.Extentions
             }
             return str;
         }
+
+        public static string NewLine => Environment.NewLine;
+        public static string NewLineTab => Environment.NewLine + "\t";
+        public static string DoubleNewLine => Environment.NewLine + Environment.NewLine;
+
     }
 
 }

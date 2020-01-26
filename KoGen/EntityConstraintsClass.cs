@@ -2,6 +2,7 @@
 using KoGen.Models.DatabaseModels;
 using static KoGen.Models.DataModels.ReferenceValue;
 using static KoGen.Extentions.NullableExtentions;
+using static KoGen.Models.DataModels.ClassMember;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Enum;
@@ -38,17 +39,17 @@ namespace KoGen
             Package = $@"havelsan.kovan.{module}.common.constraints";
             NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Abstract };
 
-            ClassMembers.Add(ClassMember.CreatePublicStaticFinalString("TABLE_NAME", Table.Name));
-            IfPresent(Table.Sequence, ts => ClassMember.CreatePublicStaticFinalString("SEQ_NAME", ts.Name));
+            ClassMembers.Add(CreatePublicStaticFinalString("TABLE_NAME", Table.Name));
+            IfPresent(Table.Sequence, ts => CreatePublicStaticFinalString("SEQ_NAME", ts.Name));
 
             ClassMembers
-                .AddList(Table.Columns.Select(x => ClassMember.CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)))
-                .AddList(Table.UniqueContraints.Select(x => ClassMember.CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)))
+                .AddList(Table.Columns.Select(x => CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)))
+                .AddList(Table.UniqueContraints.Select(x => CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)))
                 .AddList(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
                 {
                     var list = new List<ClassMember>();
-                    x.Size.Min.IfPresent(min => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", min)));
-                    x.Size.Max.IfPresent(max => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", max)));
+                    x.Size.Min.IfPresent(min => list.Add(CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", min)));
+                    x.Size.Max.IfPresent(max => list.Add(CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", max)));
                     return list;
                 }));
 
