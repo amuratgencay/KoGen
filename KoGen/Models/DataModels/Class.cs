@@ -11,77 +11,196 @@ using static KoGen.Models.DataModels.Enum.NonAccessModifier;
 
 namespace KoGen.Models.DataModels
 {
-    public abstract class Wrapper
+    public class FunctionParameter
     {
-        public Package Package { get; set; }
+        public List<Annotation> Annotations { get; set; } = new List<Annotation>();
+        public string Name { get; set; }
+        public Class Type { get; set; }
+        public object Value { get; set; }
+
+        public readonly object DefaultValue;
+
+        public FunctionParameter(string name, Class type, object value = null)
+        {
+            Name = name;
+            Type = type;
+
+            if (value == null && !type.Nullable)
+                Value = type.DefaultValue;
+            else if (value != null)
+                Value = value;
+
+            DefaultValue = Value;
+        }
+
+        private string AnnotationsString =>
+            Annotations
+            .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
+
+        public override string ToString()
+        {
+            return $"{AnnotationsString}{Type.Name} {Name}";
+        }
+    }
+    public abstract class Function
+    {
         public string Name { get; set; }
         public string Comment { get; set; }
+        public AccessModifier AccessModifier { get; set; } = Private;
+        public List<NonAccessModifier> NonAccessModifiers { get; set; } = new List<NonAccessModifier>();
+        public List<Annotation> Annotations { get; set; } = new List<Annotation>();
+        public Class ReturnType { get; set; }
+        public Class Owner { get; set; }
+        public List<FunctionParameter> FunctionParameters { get; set; }
+        protected Function(Class owner, string name, Class returnType, AccessModifier accessModifier = Public, params NonAccessModifier[] nonAccessModifiers)
+        {
+            Owner = owner;
+            Name = name;
+            ReturnType = returnType ?? JavaVoid;
+            AccessModifier = accessModifier;
+            NonAccessModifiers = nonAccessModifiers?.ToList() ?? new List<NonAccessModifier>();
+            FunctionParameters = new List<FunctionParameter>();
+        }
 
+        private string AnnotationsString =>
+            Annotations
+            .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
+
+        private string AccessModifierString =>
+            AccessModifier
+            .ToString()
+            .ToLower();
+
+        private string NonAccessModifiersString =>
+            NonAccessModifiers
+            .Aggregate(x => x.ToString().ToLower(), " ", " ");
+
+        private string ParametersString =>
+            FunctionParameters.Aggregate(x => x.ToString(), ", ");
+
+        protected abstract string BodyString();
+        public override string ToString()
+        {
+            return $"{AccessModifierString}{NonAccessModifiersString} {ReturnType.Name} {Name}({ParametersString})"
+                + $"{NewLineTab}{{"
+                + $"{BodyString()}"
+                + $"{NewLineTab}}}";
+        }
+    }
+    public class SetterFunction : Function
+    {
+        public ClassMember ClassMember { get; set; }
+        public SetterFunction(ClassMember classMember) : base(classMember.Owner, $"set{classMember.Name.Substring(0,1).ToUpper() + classMember.Name.Substring(1)}", JavaVoid)
+        {
+            ClassMember = classMember;
+            FunctionParameters.Add(new FunctionParameter(classMember.Name, ClassMember.Type));
+        }
+
+        protected override string BodyString()
+        {
+            return $"{NewLineTab}\tthis.{ClassMember.Name} = {FunctionParameters.First().Name};";
+
+        }
+    }
+    public class GetterFunction : Function
+    {
+        public ClassMember ClassMember { get; set; }
+
+        public GetterFunction(ClassMember classMember) : base(classMember.Owner, $"get{classMember.Name.Substring(0, 1).ToUpper() + classMember.Name.Substring(1)}", classMember.Type)
+        {
+            ClassMember = classMember;
+
+        }
+
+        protected override string BodyString()
+        {
+            return $"{NewLineTab}\treturn this.{ClassMember.Name};";
+        }
     }
     public class Class : Wrapper
     {
+
+        #region Properties
+
         public Class BaseClass { get; set; }
         public bool Nullable { get; set; }
         public object DefaultValue { get; set; }
         public AccessModifier AccessModifier { get; set; }
         public List<NonAccessModifier> NonAccessModifiers { get; set; }
-        public List<ClassMember> ClassMembers { get; set; }
+        public ClassMemberCollection ClassMembers { get; set; }
         public List<Annotation> Annotations { get; set; }
 
         public Func<object, string> ToStringFunction;
-        public ClassMember GetStaticMember(string name)
-        {
-            return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(Static) && x.Name == name);
-        }
 
-        public ClassMember GetStaticMemberByValue(object value)
-        {
-            return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(Static) && x.Value == value);
-        }
-        private List<Wrapper> GetRelations =>
+        #endregion
+
+        #region Functions
+
+        public ClassMember GetStaticMember(string name) => ClassMembers.GetStaticMember(name);
+        public ClassMember GetStaticMemberByValue(object value) => ClassMembers.GetStaticMemberByValue(value);
+        public List<Wrapper> Relations =>
             new List<Wrapper>()
                 .AddIfTrue((BaseClass != null && BaseClass.Package.ToString() != Package.ToString()), BaseClass)
                 .AddList(Annotations)
-                .AddList(ClassMembers.SelectMany(x => x.Annotations))
-                .AddList(ClassMembers.Select(x => x.Type));
+                .AddList(ClassMembers.Relations);
 
-        private List<Package> GetPackages =>
-            GetRelations
+        public List<Package> Packages =>
+            Relations
             .Where(x => x.Package != Package.DefaultPackage)
             .Select(x => x.Package)
             .ToList();
+
+        #endregion
+
+        #region FileGeneration
+
         private string PackageString =>
             $"package {Package};{DoubleNewLine}";
-        private string GetImportsString =>
-            GetPackages
+        private string ImportsString =>
+            Packages
             .AggregateDistinct(x => $"import {x};", NewLine, "", NewLine);
 
-        private string GetAnnotationsString =>
+        private string AnnotationsString =>
             Annotations
             .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
 
-        private string GetAccessModifierString =>
+        private string AccessModifierString =>
             AccessModifier
             .ToString()
             .ToLower();
-        private string GetNonAccessModifiersString =>
+        private string NonAccessModifiersString =>
             NonAccessModifiers
             .Aggregate(x => x.ToString().ToLower(), " ", " ");
         private string BaseClassString =>
             (BaseClass != null && BaseClass != JavaObject) ? $"extends {BaseClass.Name} " : "";
-
-        private string ClassMembersString =>
-            ClassMembers.Aggregate(x => "\t" + x.GetDeclaration(), DoubleNewLine, DoubleNewLine, DoubleNewLine);
+        private string GetterAndSetterString()
+        {
+            var res = "";
+            if (ClassMembers.GetterFunctions.Count > 0)
+            {
+                res += NewLineTab;
+                for (int i = 0; i < ClassMembers.GetterFunctions.Count; i++)
+                {
+                    res += ClassMembers.GetterFunctions[i].ToString() + NewLineTab;
+                    res += ClassMembers.SetterFunctions[i].ToString() + NewLineTab;
+                }
+                res = res.TrimEnd() + NewLine;
+            }
+            return res;
+        }
 
         public virtual string ToJavaFile()
         {
             return ($"{PackageString}"
-                    + $"{GetImportsString}"
-                    + $"{GetAnnotationsString}"
-                    + $"{GetAccessModifierString}{GetNonAccessModifiersString} class {Name} {BaseClassString}{{"
-                    + $"{ClassMembersString}"
+                    + $"{ImportsString}"
+                    + $"{AnnotationsString}"
+                    + $"{AccessModifierString}{NonAccessModifiersString} class {Name} {BaseClassString}{{"
+                    + $"{ClassMembers.ClassMembersString}"
+                    + $"{GetterAndSetterString()}"
                     + $"}}");
         }
+
+        #endregion
 
         #region Constructors
 
@@ -93,7 +212,7 @@ namespace KoGen.Models.DataModels
             DefaultValue = null;
             AccessModifier = Public;
             NonAccessModifiers = new List<NonAccessModifier>();
-            ClassMembers = new List<ClassMember>();
+            ClassMembers = new ClassMemberCollection(this);
             Annotations = new List<Annotation>();
             ToStringFunction = x => x.ToString();
         }
@@ -182,7 +301,7 @@ namespace KoGen.Models.DataModels
             hashCode = hashCode * -1521134295 + EqualityComparer<List<NonAccessModifier>>.Default.GetHashCode(NonAccessModifiers);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
             hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
-            hashCode = hashCode * -1521134295 + EqualityComparer<List<ClassMember>>.Default.GetHashCode(ClassMembers);
+            hashCode = hashCode * -1521134295 + EqualityComparer<ClassMemberCollection>.Default.GetHashCode(ClassMembers);
             hashCode = hashCode * -1521134295 + EqualityComparer<List<Annotation>>.Default.GetHashCode(Annotations);
             return hashCode;
         }

@@ -25,7 +25,7 @@ namespace KoGen
         public string TableName => Table.SafeName;
         public string TableSchema => Table.Schema;
         public ReferenceValue TableNameRef => FromStaticMember(this, "TABLE_NAME");
-        public ReferenceValue TableSequenceRef => ClassMembers.Any(x => x.Name == "TABLE_SEQ_NAME") ? FromStaticMember(this, "TABLE_SEQ_NAME") : null;
+        public ReferenceValue TableSequenceRef => FromStaticMember(this, "TABLE_SEQ_NAME");
         public List<UniqueConstraintClass> UniqueConstraintsRef => Table.UniqueContraints.Select(x => new UniqueConstraintClass { Name = FromStaticMemberByValue(this, $"{x.Name}"), ColumnList = x.Columns.Select(z => GetColumnByValue($"{z.Name}")).ToList() }).ToList();
         public ReferenceValue GetColumnByValue(string value) => FromStaticMemberByValue(this, value);
         public ReferenceValue GetColumnByName(string name) => FromStaticMember(this, name);
@@ -43,9 +43,9 @@ namespace KoGen
             IfPresent(Table.Sequence, ts => CreatePublicStaticFinalString("SEQ_NAME", ts.Name));
 
             ClassMembers
-                .AddList(Table.Columns.Select(x => CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)))
-                .AddList(Table.UniqueContraints.Select(x => CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)))
-                .AddList(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
+                .AddRange(Table.Columns.Select(x => CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)))
+                .AddRange(Table.UniqueContraints.Select(x => CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)))
+                .AddRange(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
                 {
                     var list = new List<ClassMember>();
                     x.Size.Min.IfPresent(min => list.Add(CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", min)));

@@ -18,9 +18,10 @@ namespace KoGen.Models.DataModels.Predefined
             DefaultValue = null,
             AccessModifier = Public,
             NonAccessModifiers = new List<NonAccessModifier>(),
-            ClassMembers = new List<ClassMember>(),
+            ClassMembers = new ClassMemberCollection(JavaObject),
             Annotations = new List<Annotation>()
         };
+        public static readonly Class JavaVoid = new Class("void");
 
         public static readonly Class JavaBoolean = new Class("Boolean", x => x != null ? (((bool)x) ? "true" : "false") : "", Final);
 

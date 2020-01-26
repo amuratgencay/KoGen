@@ -21,6 +21,7 @@ namespace KoGen.Models.DataModels
         public Class Owner { get; set; }
         public Class Type { get; set; }
         public object Value { get; set; }
+
         public readonly object DefaultValue;
         public string Comment { get; set; }
 
