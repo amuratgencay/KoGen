@@ -16,8 +16,6 @@ namespace KoGen.Models.DatabaseModels
         public string Prefix => Name.Substring(0, Name.IndexOf("_"));
         public string SafeName => Name.Substring(Name.IndexOf("_"));
         public Sequence Sequence => Columns.FirstOrDefault(x => x.Sequence != null)?.Sequence ?? null;
-
-
         public List<ConstraintBase> Contraints => Columns.Any(x => x.Constraints.Any()) ? Columns.SelectMany(x => x.Constraints).ToList() : new List<ConstraintBase>();
         public List<Unique> UniqueContraints => Contraints?.Where(x => x is Unique).Select(x => x as Unique).Distinct().ToList() ?? new List<Unique>();
         public List<ForeignKey> ForeingKeyContraints => Contraints?.Where(x => x is ForeignKey).Select(x => x as ForeignKey).ToList() ?? new List<ForeignKey>();

@@ -1,6 +1,7 @@
 ﻿using KoGen.Extentions;
 using static KoGen.Models.DataModels.Predefined.PredefinedAnnotations;
 using static KoGen.Models.DataModels.Predefined.ValidationAnnotations;
+using static KoGen.Extentions.NullableExtentions;
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Predefined;
@@ -32,23 +33,31 @@ namespace KoGen
 
                 ));
 
-            if (eConsts.TableSequenceRef != null)
-            {
-                Annotations.Add(HvlEntitySequence().SetParameter("name", eConsts.TableSequenceRef));
-            }
-
+            IfPresent(eConsts.TableSequenceRef, ts => Annotations.Add(HvlEntitySequence().SetParameter("name", ts)));
+            
             ClassMembers.AddRange(eConsts.Table.Columns.Select(col =>
             {
                 var cm = new ClassMember(col.Name.ToCamelCase(), col.Type.ToJavaType(), null, AccessModifier.Private);
                 cm.Annotations.Add(Column().SetParameter("name", eConsts.GetColumnName(col)));
-                if (col.Size != null)
+                cm.Annotations.AddIfTrue(!col.Nullable, NotNull());
+                
+                IfPresent(col.Size, size =>
                 {
-                    var sizeAnnotation = Size();
-                    col.Size.Min.IfPresent(min => sizeAnnotation.SetParameter("min", eConsts.GetColumnSizeMin(col)));
-                    col.Size.Max.IfPresent(max => sizeAnnotation.SetParameter("min", eConsts.GetColumnSizeMin(col)));
-
-                    cm.Annotations.Add(sizeAnnotation);
-                }
+                    if (cm.Type.BaseClass == PredefinedClasses.JavaNumber)
+                    {
+                        var da = Digits();
+                        size.Max.IfPresent(max => da.SetParameter("integer", eConsts.GetColumnSizeMax(col)));
+                        size.Min.IfPresent(min => da.SetParameter("fraction", eConsts.GetColumnSizeMin(col)));
+                        cm.Annotations.Add(da);
+                    }
+                    else
+                    {
+                        var sa = Size();
+                        size.Min.IfPresent(min => sa.SetParameter("min", eConsts.GetColumnSizeMin(col)));
+                        size.Max.IfPresent(max => sa.SetParameter("max", eConsts.GetColumnSizeMax(col)));
+                        cm.Annotations.Add(sa);
+                    }
+                });
                 return cm;
             }));
         }

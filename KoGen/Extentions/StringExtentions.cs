@@ -72,8 +72,15 @@ namespace KoGen.Extentions
             } while (part != str);
 
             return res.ToArray();
-            //return value.Substring(value.IndexOf(start)).Split(new string[] { start, end }, StringSplitOptions.RemoveEmptyEntries)
-            //    .Where(x=>!string.IsNullOrEmpty(x.Trim())).Select(x => (start + x).GetSlice(start, end)).ToArray();
+        }
+
+        public static string ReplaceAll(this string str, string oldValue, string newValue)
+        {
+            while (str.Contains(oldValue))
+            {
+                str = str.Replace(oldValue, newValue);
+            }
+            return str;
         }
     }
 

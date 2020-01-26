@@ -8,22 +8,17 @@ namespace KoGen.Models.DataModels.Predefined
 {
     public class ValidationAnnotations
     {
-        public static Annotation Size() => new Annotation
-        {
-            Name = "Size",
-            Package = "javax.validation.constraints.Size",
-            Parameters = new Dictionary<string, ClassMember>
-            {
-                {"min", new ClassMember("min", JavaIntPrimitive) },
-                {"max", new ClassMember("max", JavaIntPrimitive) },
-            }
-        };
+        public static Annotation Size() => new Annotation("Size", "javax.validation.constraints.Size",
+            new ClassMember("min", JavaIntPrimitive),
+            new ClassMember("max", JavaIntPrimitive)
+            );
 
-        public static Annotation NotNull() => new Annotation
-        {
-            Name = "NotNull",
-            Package = "javax.validation.constraints.NotNull",
-        };
+        public static Annotation Digits() => new Annotation("Digits", "javax.validation.constraints.Digits",
+            new ClassMember("integer", JavaIntPrimitive),
+            new ClassMember("fraction", JavaIntPrimitive)
+        );
+
+        public static Annotation NotNull() => new Annotation("NotNull", "javax.validation.constraints.NotNull");
     }
 
 }

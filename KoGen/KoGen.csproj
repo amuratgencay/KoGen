@@ -46,6 +46,8 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Extentions\ListExtentions.cs" />
+    <Compile Include="Extentions\NullableExtentions.cs" />
     <Compile Include="Models\DatabaseModels\Column.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\ForeignKey.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\ConstraintBase.cs" />
@@ -58,6 +60,7 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\DatabaseModels\ConstraintModels\PrimaryKey.cs" />
+    <Compile Include="Models\DataModels\ClassMember.cs" />
     <Compile Include="Models\DataModels\Enum\AccessModifier.cs" />
     <Compile Include="Models\DataModels\Annotation.cs" />
     <Compile Include="Models\DataModels\Class.cs" />

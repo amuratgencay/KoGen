@@ -11,7 +11,6 @@ namespace KoGen.Extentions
     {
         public static Type FromDBType(string dbType, Size size = null, bool nullable = false)
         {
-
             switch (dbType)
             {
                 case "bigint": return (nullable) ? typeof(long?) : typeof(long);
@@ -23,11 +22,17 @@ namespace KoGen.Extentions
                 case "integer": return (nullable) ? typeof(int?) : typeof(int);
                 case "smallint": return (nullable) ? typeof(short?) : typeof(short);
                 case "numeric":
-                    if (size.Max < 5)
-                        return (nullable) ? typeof(short?) : typeof(short);
-                    if (size.Max < 10)
-                        return (nullable) ? typeof(int?) : typeof(int);
-                    return (nullable) ? typeof(long?) : typeof(long);
+                    if (size.Min.HasValue && size.Max.HasValue) { 
+                        return (nullable) ? typeof(double?) : typeof(double);
+                    }
+                    else
+                    {
+                        if (size.Max < 5)
+                            return (nullable) ? typeof(short?) : typeof(short);
+                        if (size.Max < 10)
+                            return (nullable) ? typeof(int?) : typeof(int);
+                        return (nullable) ? typeof(long?) : typeof(long);
+                    }
                 default:
                     return null;
             }
@@ -52,6 +57,8 @@ namespace KoGen.Extentions
             {typeof(long), PredefinedClasses.JavaLongPrimitive },
             {typeof(long?), PredefinedClasses.JavaLong },
 
+            {typeof(double), PredefinedClasses.JavaDoublePrimitive },
+            {typeof(double?), PredefinedClasses.JavaDouble },
 
             {typeof(DateTime), PredefinedClasses.JavaDate },
             {typeof(DateTime?), PredefinedClasses.JavaDate },
@@ -62,63 +69,6 @@ namespace KoGen.Extentions
         public static Class ToJavaType(this Type type)
         {
             return _javaTypeDictionary.ContainsKey(type) ? _javaTypeDictionary[type] : throw new Exception("");
-        }
-        //public static string ToJavaType(this Type type, out bool nullable)
-        //{
-        //    nullable = true;
-
-        //    if (type == typeof(char) || type == typeof(char?))
-        //    {
-        //        return "Character";
-        //    }
-        //    else if (type == typeof(int))
-        //    {
-        //        nullable = false;
-        //        return "int";
-        //    }
-        //    else if (type == typeof(int?) || type == typeof(Int32) || type == typeof(Int32?))
-        //    {
-        //        nullable = true;
-        //        return "Integer";
-        //    }
-        //    else if (type == typeof(short) || type == typeof(short?) || type == typeof(Int16) || type == typeof(Int16?))
-        //    {
-        //        nullable = true;
-        //        return "Short";
-        //    }
-        //    else if (type == typeof(Int64) || type == typeof(Int64?))
-        //    {
-        //        nullable = true;
-        //        return "Long";
-        //    }
-        //    else if (type == typeof(string) || type == typeof(String))
-        //    {
-        //        return "String";
-        //    }
-        //    else if (type == typeof(DateTime) || type == typeof(DateTime?))
-        //    {
-        //        return "Date";
-        //    }
-        //    else
-        //    {
-        //        return type.Name;
-        //    }
-        //}
-        //public static string ToJavaType(this Type type)
-        //{
-        //    bool nullable;
-        //    return ToJavaType(type, out nullable);
-        //}
-
-    }
-
-    public static class NullableExtentions
-    {
-
-        public static void IfPresent<T>(this Nullable<T> nullable, Action<T> action) where T : struct
-        {
-            if (nullable.HasValue)
-                action.Invoke(nullable.Value);
         }
     }
 

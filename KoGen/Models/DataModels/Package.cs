@@ -39,16 +39,12 @@ namespace KoGen.Models.DataModels
 
         public override string ToString()
         {
-            var i = this;
             var res = "";
-
-            while (i.Parent != null)
+            for (var i = this; i.Parent != null; i = i.Parent)
             {
-                res = "." + i.Name + res;
-                i = i.Parent;
+                res = (i.Parent != null && !string.IsNullOrEmpty(i.Parent.Name) ? "." : "") + i.Name + res;
             }
-
-            return res = res.Substring(1);
+            return res;
         }
     }
 }

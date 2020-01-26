@@ -4,11 +4,13 @@ using System.Collections.Generic;
 
 namespace KoGen.Models.DatabaseModels
 {
+    
     public class Size
     {
         public int? Min { get; set; }
         public int? Max { get; set; }
     }
+
     public class Column
     {
         public string Name { get; set; }

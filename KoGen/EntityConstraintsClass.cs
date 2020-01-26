@@ -1,6 +1,7 @@
 ﻿using KoGen.Extentions;
 using KoGen.Models.DatabaseModels;
 using static KoGen.Models.DataModels.ReferenceValue;
+using static KoGen.Extentions.NullableExtentions;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Enum;
@@ -27,8 +28,8 @@ namespace KoGen
         public List<UniqueConstraintClass> UniqueConstraintsRef => Table.UniqueContraints.Select(x => new UniqueConstraintClass { Name = FromStaticMemberByValue(this, $"{x.Name}"), ColumnList = x.Columns.Select(z => GetColumnByValue($"{z.Name}")).ToList() }).ToList();
         public ReferenceValue GetColumnByValue(string value) => FromStaticMemberByValue(this, value);
         public ReferenceValue GetColumnByName(string name) => FromStaticMember(this, name);
-        public ReferenceValue GetColumnSizeMax(Column column) => GetColumnByName($"{column.Name}_SIZE_MIN");
-        public ReferenceValue GetColumnSizeMin(Column column) => GetColumnByName($"{column.Name}_SIZE_MAX");
+        public ReferenceValue GetColumnSizeMax(Column column) => GetColumnByName($"{column.Name}_SIZE_MAX");
+        public ReferenceValue GetColumnSizeMin(Column column) => GetColumnByName($"{column.Name}_SIZE_MIN");
         public ReferenceValue GetColumnName(Column column) => GetColumnByName($"COLUMN_{column.Name}");
         public EntityConstraintsClass(Table table, string module)
         {
@@ -38,19 +39,18 @@ namespace KoGen
             NonAccessModifiers = new List<NonAccessModifier> { NonAccessModifier.Abstract };
 
             ClassMembers.Add(ClassMember.CreatePublicStaticFinalString("TABLE_NAME", Table.Name));
+            IfPresent(Table.Sequence, ts => ClassMember.CreatePublicStaticFinalString("SEQ_NAME", ts.Name));
 
-            if (Table.Sequence != null)
-                ClassMembers.Add(ClassMember.CreatePublicStaticFinalString("SEQ_NAME", Table.Sequence.Name));
-
-            ClassMembers.AddRange(Table.Columns.Select(x => ClassMember.CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)));
-            ClassMembers.AddRange(Table.UniqueContraints.Select(x => ClassMember.CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)));
-            ClassMembers.AddRange(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
-            {
-                var list = new List<ClassMember>();
-                x.Size.Min.IfPresent(min => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", min)));
-                x.Size.Max.IfPresent(max => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", max)));
-                return list;
-            }));
+            ClassMembers
+                .AddList(Table.Columns.Select(x => ClassMember.CreatePublicStaticFinalString($@"COLUMN_{x.Name}", x.Name)))
+                .AddList(Table.UniqueContraints.Select(x => ClassMember.CreatePublicStaticFinalString($@"{(x.Name.StartsWith("UX_") ? x.Name : "UX_" + x.Name)}", x.Name)))
+                .AddList(Table.Columns.Where(x => x.Size != null).SelectMany(x =>
+                {
+                    var list = new List<ClassMember>();
+                    x.Size.Min.IfPresent(min => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MIN", min)));
+                    x.Size.Max.IfPresent(max => list.Add(ClassMember.CreatePublicStaticFinalInt($@"{x.Name}_SIZE_MAX", max)));
+                    return list;
+                }));
 
         }
 
