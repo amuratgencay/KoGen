@@ -61,9 +61,13 @@ namespace KoGen.Models.DataModels
         private string GetAssignString =>
             (Value != Type.DefaultValue ? $@" = {AssignString()}" : "");
 
+        private string GenericString =>
+          Type.GenericList
+          .Aggregate(x => x.Name, ", ", "<", ">");
+
         public string GetDeclaration()
             => GetAnnotationsString
-                + $@"{GetAccessModifierString}{GetNonAccessModifiersString} {Type.Name} {Name}{GetAssignString};";
+                + $@"{GetAccessModifierString}{GetNonAccessModifiersString} {Type.Name}{GenericString} {Name}{GetAssignString};";
 
         public string AssignString()
         {

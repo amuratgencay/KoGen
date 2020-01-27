@@ -1,6 +1,7 @@
 ﻿using KoGen.Extentions;
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DatabaseModels.ConstraintModels;
+using KoGen.Models.DataModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -17,7 +18,7 @@ namespace KoGen
         public Dictionary<string, EntityConstraintsClass> EntityConstraintDic { get; set; }
         public Dictionary<string, EntityClass> EntityDic { get; set; }
 
-        public DBFile(string name)
+        public DBFile(string name, string module)
         {
             TableList = new List<Table>();
 
@@ -67,6 +68,59 @@ namespace KoGen
                 }
 
             }
+
+
+            EntityConstraintDic = new Dictionary<string, EntityConstraintsClass>();
+            EntityDic = new Dictionary<string, EntityClass>();
+            foreach (var table in TableList)
+            {
+                table.Schema = "KOVAN_" + module.ToUpperEn();
+                var moduleName = module.ToLowerEn();
+                var ec = new EntityConstraintsClass(table, "workshop");
+                EntityConstraintDic.Add(ec.Name, ec);
+
+                var entity = new EntityClass(ec, "workshop");
+                EntityDic.Add(entity.Name, entity);
+            }
+
+
+            foreach (var table in TableList)
+            {
+                table.Columns.Any(x => x.Constraints.Count > 0);
+                foreach (var col in table.Columns)
+                {
+                    if (col.Constraints.Any(x => x is ForeignKey))
+                    {
+                        var entityClass = EntityDic.Values.First(x => x.EntityConstraints.Table.Name == col.Table.Name);
+                        var fkEntityClass = EntityDic.Values.First(x => x.EntityConstraints.Table.Name == (col.Constraints.First(y => y is ForeignKey) as ForeignKey).ReferenceColumn.Table.Name);
+                        var cm = entityClass.ClassMembers.ClassMembers.First(x => x.Name == col.Name.ToCamelCase());
+
+                        var entityClassMember = new ClassMember(fkEntityClass.Name.Replace("Entity", "").ToLowerFirstCharacter(), fkEntityClass, null, Models.DataModels.Enum.AccessModifier.Private);
+                        entityClass.ClassMembers.Replace(col.Name.ToCamelCase(), entityClassMember);
+
+                        var listClass = Models.DataModels.Predefined.PredefinedClasses.JavaList;
+                        listClass.GenericList.Add(entityClass);
+                        var fkEntityClassMember = new ClassMember(entityClass.Name.Replace("Entity", "") + "List", listClass, null, Models.DataModels.Enum.AccessModifier.Private);
+                        if (!col.Constraints.Any(x => x is Unique))
+                        {
+                            fkEntityClass.ClassMembers.Add(fkEntityClassMember);
+                            entityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.ManyToOne());
+                            fkEntityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.OneToMany());
+                            fkEntityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.JoinColumn()
+                                .SetParameter("referencedColumnName", fkEntityClass.EntityConstraints.GetStaticMemberByValue((col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).Column.Name))
+                                .SetParameter("name", ReferenceValue.FromStaticMemberByValue(entityClass.EntityConstraints, (col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).ReferenceColumn.Name))
+                                .SetParameter("foreignKey", Models.DataModels.Predefined.PredefinedAnnotations.ForeignKey()
+                                    .SetParameter("name", (col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).Name)));
+                        }
+                        else
+                        {
+                            entityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.OneToOne());
+                        }
+
+
+                    }
+                }
+            }
         }
 
         private void GetTable(string item)
@@ -85,8 +139,8 @@ namespace KoGen
                     GetTableColumn(t, column);
                 }
                 TableList.Add(t);
-
             }
+
         }
 
         private static void GetTableColumn(Table t, string column)
@@ -134,7 +188,7 @@ namespace KoGen
 
             if (constraint.Contains("PRIMARY KEY"))
             {
-               c = GetPrimaryKey(constraint, out columns, table);
+                c = GetPrimaryKey(constraint, out columns, table);
             }
             else if (constraint.Contains("UNIQUE"))
             {
@@ -150,7 +204,7 @@ namespace KoGen
             ConstraintBase c = new PrimaryKey();
             (c as PrimaryKey).Columns.AddRange(table.Columns.Join(columns, x => x.Name, y => y, (a, b) =>
             {
-                
+
                 a.Constraints.Add(c);
                 return a;
             }).ToList());

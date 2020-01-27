@@ -3,6 +3,7 @@ using static KoGen.Extentions.StringExtentions;
 using System.Collections.Generic;
 using System.Linq;
 using static KoGen.Models.DataModels.Enum.NonAccessModifier;
+using System;
 
 namespace KoGen.Models.DataModels
 {
@@ -54,6 +55,19 @@ namespace KoGen.Models.DataModels
         public ClassMember GetStaticMemberByValue(object value)
         {
             return ClassMembers.FirstOrDefault(x => x.NonAccessModifiers.Contains(Static) && x.Value == value);
+        }
+
+        public void Replace(string name, ClassMember classMember)
+        {
+            for (int i = 0; i < ClassMembers.Count; i++)
+            {
+                if(ClassMembers[i].Name == name)
+                {
+                    ClassMembers.RemoveAt(i);
+                    ClassMembers.Insert(i, classMember);
+                    break;
+                }
+            }
         }
 
         public List<Wrapper> Relations =>

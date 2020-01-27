@@ -36,10 +36,12 @@ namespace KoGen.Models.DataModels
         private string AnnotationsString =>
             Annotations
             .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
-
+        private string GenericString =>
+            Type.GenericList
+            .Aggregate(x => x.Name, ", ", "<", ">");
         public override string ToString()
         {
-            return $"{AnnotationsString}{Type.Name} {Name}";
+            return $"{AnnotationsString}{Type.Name}{GenericString} {Name}";
         }
     }
     public abstract class Function
@@ -52,6 +54,7 @@ namespace KoGen.Models.DataModels
         public Class ReturnType { get; set; }
         public Class Owner { get; set; }
         public List<FunctionParameter> FunctionParameters { get; set; }
+        public List<Expression> Expressions { get; set; }
         protected Function(Class owner, string name, Class returnType, AccessModifier accessModifier = Public, params NonAccessModifier[] nonAccessModifiers)
         {
             Owner = owner;
@@ -60,6 +63,7 @@ namespace KoGen.Models.DataModels
             AccessModifier = accessModifier;
             NonAccessModifiers = nonAccessModifiers?.ToList() ?? new List<NonAccessModifier>();
             FunctionParameters = new List<FunctionParameter>();
+            Expressions = new List<Expression>();
         }
 
         private string AnnotationsString =>
@@ -78,45 +82,66 @@ namespace KoGen.Models.DataModels
         private string ParametersString =>
             FunctionParameters.Aggregate(x => x.ToString(), ", ");
 
-        protected abstract string BodyString();
+        private string GenericString =>
+            ReturnType.GenericList
+            .Aggregate(x => x.Name, ", ", "<", ">");
+        private string BodyString => Expressions.Aggregate(x => $"{x}", NewLineDoubleTab, NewLineDoubleTab);
         public override string ToString()
         {
-            return $"{AccessModifierString}{NonAccessModifiersString} {ReturnType.Name} {Name}({ParametersString})"
+            return $"{AccessModifierString}{NonAccessModifiersString} {ReturnType.Name}{GenericString} {Name}({ParametersString})"
                 + $"{NewLineTab}{{"
-                + $"{BodyString()}"
-                + $"{NewLineTab}}}";
+                + $"{BodyString}"
+                + $"{NewLineTab}}}"
+                + $"{NewLineTab}";
         }
     }
     public class SetterFunction : Function
     {
         public ClassMember ClassMember { get; set; }
-        public SetterFunction(ClassMember classMember) : base(classMember.Owner, $"set{classMember.Name.Substring(0, 1).ToUpper() + classMember.Name.Substring(1)}", JavaVoid)
+        public SetterFunction(ClassMember classMember) : base(classMember.Owner, $"set{classMember.Name.ToUpperFirstCharacter()}", JavaVoid)
         {
             ClassMember = classMember;
-            FunctionParameters.Add(new FunctionParameter(classMember.Name, ClassMember.Type));
-        }
-
-        protected override string BodyString()
-        {
-            return $"{NewLineTab}\tthis.{ClassMember.Name} = {FunctionParameters.First().Name};";
-
+            var fp = new FunctionParameter(classMember.Name, ClassMember.Type);
+            FunctionParameters.Add(fp);
+            Expressions.Add(new AssignExpression { Destination = classMember, Source = fp });
         }
     }
     public class GetterFunction : Function
     {
         public ClassMember ClassMember { get; set; }
 
-        public GetterFunction(ClassMember classMember) : base(classMember.Owner, $"get{classMember.Name.Substring(0, 1).ToUpper() + classMember.Name.Substring(1)}", classMember.Type)
+        public GetterFunction(ClassMember classMember) : base(classMember.Owner, $"get{classMember.Name.ToUpperFirstCharacter()}", classMember.Type)
         {
             ClassMember = classMember;
-
-        }
-
-        protected override string BodyString()
-        {
-            return $"{NewLineTab}\treturn this.{ClassMember.Name};";
+            Expressions.Add(new ReturnExpression { ClassMember = classMember });
         }
     }
+
+    public abstract class Expression
+    {
+
+    }
+    public class AssignExpression : Expression
+    {
+        public FunctionParameter Source { get; set; }
+        public ClassMember Destination { get; set; }
+
+        public override string ToString()
+        {
+            return $"this.{Destination.Name} = {Source.Name};";
+        }
+    }
+
+    public class ReturnExpression : Expression
+    {
+        public ClassMember ClassMember { get; set; }
+        public override string ToString()
+        {
+            return $"return this.{ClassMember.Name};";
+        }
+    }
+
+
     public class Class : Wrapper
     {
 
@@ -131,7 +156,7 @@ namespace KoGen.Models.DataModels
         public List<Annotation> Annotations { get; set; }
 
         public Func<object, string> ToStringFunction;
-
+        public List<Class> GenericList { get; set; }
         #endregion
 
         #region Functions
@@ -163,7 +188,9 @@ namespace KoGen.Models.DataModels
         private string AnnotationsString =>
             Annotations
             .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
-
+        private string GenericString =>
+            GenericList
+            .Aggregate(x => x.Name, ", ", "<", ">");
         private string AccessModifierString =>
             AccessModifier
             .ToString()
@@ -194,7 +221,7 @@ namespace KoGen.Models.DataModels
             return ($"{PackageString}"
                     + $"{ImportsString}"
                     + $"{AnnotationsString}"
-                    + $"{AccessModifierString}{NonAccessModifiersString} class {Name} {BaseClassString}{{"
+                    + $"{AccessModifierString}{NonAccessModifiersString} class {Name}{GenericString} {BaseClassString}{{"
                     + $"{ClassMembers.ClassMembersString}"
                     + $"{GetterAndSetterString()}"
                     + $"}}");
@@ -215,6 +242,7 @@ namespace KoGen.Models.DataModels
             ClassMembers = new ClassMemberCollection(this);
             Annotations = new List<Annotation>();
             ToStringFunction = x => x.ToString();
+            GenericList = new List<Class>();
         }
 
         public Class(string name) : this()

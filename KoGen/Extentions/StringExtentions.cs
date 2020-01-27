@@ -28,10 +28,14 @@ namespace KoGen.Extentions
                     result += item.ToLowerEn();
                 }
                 index++;
-            };
+            }
 
             return result;
         }
+
+        public static string ToUpperFirstCharacter(this string value) => !string.IsNullOrEmpty(value) ? value.Substring(0, 1).ToUpper(System.Globalization.CultureInfo.InvariantCulture) + value.Substring(1) : "";
+        public static string ToLowerFirstCharacter(this string value) => !string.IsNullOrEmpty(value) ? value.Substring(0, 1).ToLower(System.Globalization.CultureInfo.InvariantCulture) + value.Substring(1) : "";
+
         public static string ToLowerEn(this string value) => value.ToLower(System.Globalization.CultureInfo.InvariantCulture);
         public static string ToUpperEn(this string value) => value.ToUpper(System.Globalization.CultureInfo.InvariantCulture);
 
@@ -89,6 +93,7 @@ namespace KoGen.Extentions
 
         public static string NewLine => Environment.NewLine;
         public static string NewLineTab => Environment.NewLine + "\t";
+        public static string NewLineDoubleTab => Environment.NewLine + "\t\t";
         public static string DoubleNewLine => Environment.NewLine + Environment.NewLine;
 
     }

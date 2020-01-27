@@ -38,6 +38,11 @@ namespace KoGen.Extentions
 
             return res;
         }
+
+        private static List<T> CloneListAs<T>(IList<object> source)
+        {
+            return source.Cast<T>().ToList();
+        }
     }
 
 

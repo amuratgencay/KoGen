@@ -23,48 +23,17 @@ namespace KoGen
         private DBFile _dbFile;
         private void Form1_Load(object sender, EventArgs e)
         {
-            _dbFile = new DBFile("table.sql");
+
 
         }
 
 
         private void btnGenerate_Click(object sender, EventArgs e)
         {
-            _dbFile.EntityConstraintDic = new Dictionary<string, EntityConstraintsClass>();
-            _dbFile.EntityDic = new Dictionary<string, EntityClass>();
-            foreach (var table in _dbFile.TableList)
-            {
-                table.Schema = "KOVAN_" + txtModuleName.Text.ToUpperEn();
-                var module = txtModuleName.Text.ToLowerEn();
-                var ec = new EntityConstraintsClass(table, "workshop");
-                _dbFile.EntityConstraintDic.Add(ec.Name, ec);
-                lstConstraints.Items.Add(ec.Name);
+            _dbFile = new DBFile("table.sql", txtModuleName.Text);
 
-                var entity = new EntityClass(ec, "workshop");
-                _dbFile.EntityDic.Add(entity.Name, entity);
-                lstEntities.Items.Add(entity.Name);
-            }
-
-
-
-            foreach (var table in _dbFile.TableList)
-            {
-                table.Columns.Any(x => x.Constraints.Count > 0);
-                foreach (var col in table.Columns)
-                {
-                    if((col.Constraints.Any(x=>x is Unique) && col.Constraints.Any(x => x is ForeignKey)))
-                    {
-                        var entityClass = _dbFile.EntityDic.Values.First(x => x.EntityConstraints.Table.Name == col.Table.Name);
-                        var fkEntityClass = _dbFile.EntityDic.Values.First(x => x.EntityConstraints.Table.Name == (col.Constraints.First(y => y is ForeignKey) as ForeignKey).ReferenceColumn.Table.Name);
-
-                        entityClass.ClassMembers.ClassMembers.First(x => x.Name == col.Name.ToCamelCase()).Type = fkEntityClass;
-                         
-                        Console.WriteLine();
-                    }
-                }
-            }
-
-            Console.WriteLine();
+            lstConstraints.Items.AddRange(_dbFile.EntityConstraintDic.Values.Select(x => x.Name).ToArray<object>());
+            lstEntities.Items.AddRange(_dbFile.EntityDic.Values.Select(x => x.Name).ToArray<object>());
         }
 
         private void lstConstraints_SelectedIndexChanged(object sender, EventArgs e)
