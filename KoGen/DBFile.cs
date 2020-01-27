@@ -67,7 +67,6 @@ namespace KoGen
                 }
 
             }
-
         }
 
         private void GetTable(string item)

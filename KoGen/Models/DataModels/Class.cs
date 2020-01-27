@@ -90,7 +90,7 @@ namespace KoGen.Models.DataModels
     public class SetterFunction : Function
     {
         public ClassMember ClassMember { get; set; }
-        public SetterFunction(ClassMember classMember) : base(classMember.Owner, $"set{classMember.Name.Substring(0,1).ToUpper() + classMember.Name.Substring(1)}", JavaVoid)
+        public SetterFunction(ClassMember classMember) : base(classMember.Owner, $"set{classMember.Name.Substring(0, 1).ToUpper() + classMember.Name.Substring(1)}", JavaVoid)
         {
             ClassMember = classMember;
             FunctionParameters.Add(new FunctionParameter(classMember.Name, ClassMember.Type));

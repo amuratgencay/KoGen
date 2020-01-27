@@ -12,9 +12,10 @@ namespace KoGen
 {
     public class EntityClass : Class
     {
-
+        public EntityConstraintsClass EntityConstraints { get; set; }
         public EntityClass(EntityConstraintsClass eConsts, string module)
         {
+            EntityConstraints = eConsts;
             Name = eConsts.TableName.ToPascalCase() + "Entity";
             Package = $@"havelsan.kovan.{module}.service.entity";
 

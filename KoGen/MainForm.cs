@@ -44,6 +44,27 @@ namespace KoGen
                 _dbFile.EntityDic.Add(entity.Name, entity);
                 lstEntities.Items.Add(entity.Name);
             }
+
+
+
+            foreach (var table in _dbFile.TableList)
+            {
+                table.Columns.Any(x => x.Constraints.Count > 0);
+                foreach (var col in table.Columns)
+                {
+                    if((col.Constraints.Any(x=>x is Unique) && col.Constraints.Any(x => x is ForeignKey)))
+                    {
+                        var entityClass = _dbFile.EntityDic.Values.First(x => x.EntityConstraints.Table.Name == col.Table.Name);
+                        var fkEntityClass = _dbFile.EntityDic.Values.First(x => x.EntityConstraints.Table.Name == (col.Constraints.First(y => y is ForeignKey) as ForeignKey).ReferenceColumn.Table.Name);
+
+                        entityClass.ClassMembers.ClassMembers.First(x => x.Name == col.Name.ToCamelCase()).Type = fkEntityClass;
+                         
+                        Console.WriteLine();
+                    }
+                }
+            }
+
+            Console.WriteLine();
         }
 
         private void lstConstraints_SelectedIndexChanged(object sender, EventArgs e)
