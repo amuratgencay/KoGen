@@ -83,5 +83,32 @@ namespace KoGen.Models.DataModels
 
         public static ClassMember CreatePublicStaticFinalInt(string name, int value) =>
             new ClassMember(name, JavaIntPrimitive, value, Public, Static, Final);
+
+  
+        public override int GetHashCode()
+        {
+            var hashCode = 1806618034;
+            hashCode = hashCode * -1521134295 + AccessModifier.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<NonAccessModifier>>.Default.GetHashCode(NonAccessModifiers);
+            hashCode = hashCode * -1521134295 + EqualityComparer<List<Annotation>>.Default.GetHashCode(Annotations);
+            hashCode = hashCode * -1521134295 + Initialized.GetHashCode();
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Name);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Class>.Default.GetHashCode(Owner);
+            hashCode = hashCode * -1521134295 + EqualityComparer<Class>.Default.GetHashCode(Type);
+            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(Value);
+            hashCode = hashCode * -1521134295 + EqualityComparer<object>.Default.GetHashCode(DefaultValue);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(Comment);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GetAnnotationsString);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GetAccessModifierString);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GetNonAccessModifiersString);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GetAssignString);
+            hashCode = hashCode * -1521134295 + EqualityComparer<string>.Default.GetHashCode(GenericString);
+            return hashCode;
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is ClassMember member && Name == member.Name;
+        }
     }
 }

@@ -48,7 +48,9 @@ namespace KoGen.Models.DataModels.Predefined
            new ClassMember("referencedColumnName", JavaString),
            new ClassMember("name", JavaString),
            new ClassMember("foreignKey", JavaObject)
-       );
+        );
+        public static Annotation Component() => new Annotation("Component", "org.springframework.stereotype.Component");
+
     }
 
 }

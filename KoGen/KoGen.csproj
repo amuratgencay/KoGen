@@ -46,9 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConverterClass.cs" />
     <Compile Include="DBFile.cs" />
     <Compile Include="Extentions\ListExtentions.cs" />
     <Compile Include="Extentions\NullableExtentions.cs" />
+    <Compile Include="ModelClass.cs" />
     <Compile Include="Models\DatabaseModels\Column.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\ForeignKey.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\ConstraintBase.cs" />
@@ -80,6 +82,9 @@
     <Compile Include="Models\DatabaseModels\Table.cs" />
     <Compile Include="Extentions\TypeExtentions.cs" />
     <Compile Include="Models\DatabaseModels\ConstraintModels\Unique.cs" />
+    <EmbeddedResource Include="MainForm.resx">
+      <DependentUpon>MainForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>

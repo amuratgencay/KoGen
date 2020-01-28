@@ -34,6 +34,9 @@ namespace KoGen
 
             lstConstraints.Items.AddRange(_dbFile.EntityConstraintDic.Values.Select(x => x.Name).ToArray<object>());
             lstEntities.Items.AddRange(_dbFile.EntityDic.Values.Select(x => x.Name).ToArray<object>());
+            lstModels.Items.AddRange(_dbFile.ModelDic.Values.Select(x => x.Name).ToArray<object>());
+            lstConverters.Items.AddRange(_dbFile.ConverterDic.Values.Select(x => x.Name).ToArray<object>());
+
         }
 
         private void lstConstraints_SelectedIndexChanged(object sender, EventArgs e)
@@ -46,5 +49,14 @@ namespace KoGen
             rtbEntities.Text = _dbFile.EntityDic[lstEntities.Text].ToJavaFile();
         }
 
+        private void lstModels_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            rtbModels.Text = _dbFile.ModelDic[lstModels.Text].ToJavaFile();
+        }
+
+        private void lstConverters_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            rtbConverters.Text = _dbFile.ConverterDic[lstConverters.Text].ToJavaFile();
+        }
     }
 }

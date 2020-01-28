@@ -44,7 +44,7 @@ namespace KoGen.Models.DataModels
             return $"{AnnotationsString}{Type.Name}{GenericString} {Name}";
         }
     }
-    public abstract class Function
+    public class Function
     {
         public string Name { get; set; }
         public string Comment { get; set; }
@@ -55,7 +55,7 @@ namespace KoGen.Models.DataModels
         public Class Owner { get; set; }
         public List<FunctionParameter> FunctionParameters { get; set; }
         public List<Expression> Expressions { get; set; }
-        protected Function(Class owner, string name, Class returnType, AccessModifier accessModifier = Public, params NonAccessModifier[] nonAccessModifiers)
+        public Function(Class owner, string name, Class returnType, AccessModifier accessModifier = Public, params NonAccessModifier[] nonAccessModifiers)
         {
             Owner = owner;
             Name = name;
@@ -141,6 +141,20 @@ namespace KoGen.Models.DataModels
         }
     }
 
+    public class SetterAssignExpression : Expression
+    {
+        public FunctionParameter Source { get; set; }
+        public ClassMember SourceClassMember { get; set; }
+        public FunctionParameter Destination { get; set; }
+        public ClassMember DestinationClassMember { get; set; }
+
+
+        public override string ToString()
+        {
+            return $"{Destination.Name}.{Destination.Type.ClassMembers.SetterFunctions.First(x => x.ClassMember == DestinationClassMember).Name}({Source.Name}.{Source.Type.ClassMembers.GetterFunctions.First(x=>x.ClassMember == SourceClassMember).Name}());";
+        }
+    }
+
 
     public class Class : Wrapper
     {
@@ -157,6 +171,8 @@ namespace KoGen.Models.DataModels
 
         public Func<object, string> ToStringFunction;
         public List<Class> GenericList { get; set; }
+        public List<Function> Functions { get; set; }
+
         #endregion
 
         #region Functions
@@ -165,13 +181,16 @@ namespace KoGen.Models.DataModels
         public ClassMember GetStaticMemberByValue(object value) => ClassMembers.GetStaticMemberByValue(value);
         public List<Wrapper> Relations =>
             new List<Wrapper>()
-                .AddIfTrue((BaseClass != null && BaseClass.Package.ToString() != Package.ToString()), BaseClass)
+                .AddIfTrue(BaseClass != null, BaseClass)
                 .AddList(Annotations)
-                .AddList(ClassMembers.Relations);
+                .AddList(Annotations.SelectMany(x=>x.Parameters.Values.Select(y=>y.Type)))
+                .AddList(ClassMembers.Relations)
+                .AddList(ClassMembers.ClassMembers.SelectMany(x=>x.Annotations.SelectMany(y => y.Parameters.Values.Select(z => (z.Value is ReferenceValue referenceValue) ? referenceValue.Clazz : z.Type))))
+                .AddList(GenericList.SelectMany(x => x.Relations));
 
         public List<Package> Packages =>
             Relations
-            .Where(x => x.Package != Package.DefaultPackage)
+            .Where(x => x.Package != Package.DefaultPackage && x.Package != Package)
             .Select(x => x.Package)
             .ToList();
 
@@ -187,7 +206,7 @@ namespace KoGen.Models.DataModels
 
         private string AnnotationsString =>
             Annotations
-            .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
+            .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine, false, "\r\n");
         private string GenericString =>
             GenericList
             .Aggregate(x => x.Name, ", ", "<", ">");
@@ -243,6 +262,7 @@ namespace KoGen.Models.DataModels
             Annotations = new List<Annotation>();
             ToStringFunction = x => x.ToString();
             GenericList = new List<Class>();
+            Functions = new List<Function>();
         }
 
         public Class(string name) : this()

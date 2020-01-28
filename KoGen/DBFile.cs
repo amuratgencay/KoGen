@@ -17,6 +17,9 @@ namespace KoGen
         public List<Table> TableList { get; set; }
         public Dictionary<string, EntityConstraintsClass> EntityConstraintDic { get; set; }
         public Dictionary<string, EntityClass> EntityDic { get; set; }
+        public Dictionary<string, ModelClass> ModelDic { get; set; }
+        public Dictionary<string, ConverterClass> ConverterDic { get; set; }
+
 
         public DBFile(string name, string module)
         {
@@ -128,6 +131,20 @@ namespace KoGen
 
                     }
                 }
+            }
+
+            ModelDic = new Dictionary<string, ModelClass>();
+            foreach (var entityClass in EntityDic.Values)
+            {
+                var m = new ModelClass(entityClass, "workshop");
+                ModelDic.Add(m.Name, m);
+            }
+
+            ConverterDic = new Dictionary<string, ConverterClass>();
+            foreach (var modelClass in ModelDic.Values)
+            {
+                var m = new ConverterClass(modelClass, "workshop");
+                ConverterDic.Add(m.Name, m);
             }
         }
 

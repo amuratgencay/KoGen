@@ -61,7 +61,7 @@ namespace KoGen.Models.DataModels
         {
             for (int i = 0; i < ClassMembers.Count; i++)
             {
-                if(ClassMembers[i].Name == name)
+                if (ClassMembers[i].Name == name)
                 {
                     ClassMembers.RemoveAt(i);
                     ClassMembers.Insert(i, classMember);
@@ -74,6 +74,7 @@ namespace KoGen.Models.DataModels
            new List<Wrapper>()
                .AddList(ClassMembers.SelectMany(x => x.Annotations))
                .AddList(ClassMembers.Select(x => x.Type));
+
 
         public string ClassMembersString =>
             ClassMembers.Aggregate(x => "\t" + x.GetDeclaration(), DoubleNewLine, DoubleNewLine, DoubleNewLine);

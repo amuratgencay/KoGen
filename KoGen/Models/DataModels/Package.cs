@@ -13,9 +13,9 @@ namespace KoGen.Models.DataModels
 
         private static readonly Package _root = new Package();
 
-        public static readonly Package DefaultPackage = ContertToPackage("java.lang");
+        public static readonly Package DefaultPackage = ConvertToPackage("java.lang");
 
-        private static Package ContertToPackage(string value)
+        private static Package ConvertToPackage(string value)
         {
             var i = _root;
             foreach (var item in value.Split('.'))
@@ -34,7 +34,9 @@ namespace KoGen.Models.DataModels
             }
             return i;
         }
-        public static implicit operator Package(string value) => ContertToPackage(value);
+        public bool IsParent(Package package) => this.Parent == package;
+
+        public static implicit operator Package(string value) => ConvertToPackage(value);
 
 
         public override string ToString()

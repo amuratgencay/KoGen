@@ -21,7 +21,8 @@ namespace KoGen.Models.DataModels.Predefined
             ClassMembers = new ClassMemberCollection(JavaObject),
             Annotations = new List<Annotation>(),
             ToStringFunction = x => x.ToString(),
-            GenericList = new List<Class>()
+            GenericList = new List<Class>(),
+            Functions = new List<Function>()
         };
         public static Class JavaVoid => new Class("void");
 
@@ -58,6 +59,8 @@ namespace KoGen.Models.DataModels.Predefined
         public static Class JavaList => new Class("List", "java.util", x => ConvertToList((IList)x).Aggregate(y => y.ToString(), ", ", "{ ", " }", true));
 
         public static Class HvlEntity => new Class("HvlEntity", "tr.com.havelsan.nf.domain.model.entity.HvlEntity");
+        public static Class HvlModel => new Class("HvlModel", "tr.com.havelsan.nf.dto.model.HvlModel");
+        public static Class HvlConverter => new Class("HvlConverter", "tr.com.havelsan.nf.converter.HvlConverter");
 
     }
 }

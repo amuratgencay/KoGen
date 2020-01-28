@@ -9,7 +9,8 @@ namespace KoGen.Extentions
     {
         public static List<T> AddList<T>(this List<T> list, IEnumerable<T> collection)
         {
-            list.AddRange(collection);
+            if (collection.Count() > 0)
+                list.AddRange(collection);
             return list;
         }
 
@@ -20,9 +21,9 @@ namespace KoGen.Extentions
             return list;
         }
 
-        public static string Aggregate<TSource>(this List<TSource> source, Func<TSource, string> selector = null, string infix = "", string prefix = "", string suffix = "", bool addPrefixAndSuffix = false)
+        public static string Aggregate<TSource>(this List<TSource> source, Func<TSource, string> selector = null, string infix = "", string prefix = "", string suffix = "", bool addPrefixAndSuffix = false, string emptyValue = "")
         {
-            return source.Count > 0 ? prefix + source.Select(x => selector != null ? selector(x) : x.ToString()).Aggregate((x, y) => x + infix + y) + suffix : (addPrefixAndSuffix ? prefix.Trim() + suffix.Trim()  :"");
+            return source.Count > 0 ? prefix + source.Select(x => selector != null ? selector(x) : x.ToString()).Aggregate((x, y) => x + infix + y) + suffix : (addPrefixAndSuffix ? (prefix.Trim().Length > 0 ? prefix.Trim() : prefix) + (suffix.Trim().Length > 0 ? suffix.Trim() : suffix) : emptyValue);
         }
 
         public static string AggregateDistinct<TSource>(this List<TSource> source, Func<TSource, string> selector = null, string infix = "", string prefix = "", string suffix = "", bool addPrefixAndSuffix = false)
