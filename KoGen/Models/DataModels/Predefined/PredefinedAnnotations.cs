@@ -33,7 +33,10 @@ namespace KoGen.Models.DataModels.Predefined
             new ClassMember("name", JavaString)
         );
 
-        public static Annotation OneToMany() => new Annotation("OneToMany", "javax.persistence.OneToMany");
+        public static Annotation OneToMany() => new Annotation("OneToMany", "javax.persistence.OneToMany",
+           new ClassMember("cascade", JavaString),
+           new ClassMember("mappedBy", JavaString)
+        );
         public static Annotation ManyToOne() => new Annotation("ManyToOne", "javax.persistence.ManyToOne");
         public static Annotation OneToOne() => new Annotation("OneToOne", "javax.persistence.OneToOne");
         public static Annotation ManyToMany() => new Annotation("ManyToMany", "javax.persistence.ManyToMany");

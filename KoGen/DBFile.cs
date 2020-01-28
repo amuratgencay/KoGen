@@ -93,6 +93,8 @@ namespace KoGen
                     {
                         var entityClass = EntityDic.Values.First(x => x.EntityConstraints.Table.Name == col.Table.Name);
                         var fkEntityClass = EntityDic.Values.First(x => x.EntityConstraints.Table.Name == (col.Constraints.First(y => y is ForeignKey) as ForeignKey).ReferenceColumn.Table.Name);
+                        if (entityClass.Name == fkEntityClass.Name)
+                            continue;
                         var cm = entityClass.ClassMembers.ClassMembers.First(x => x.Name == col.Name.ToCamelCase());
 
                         var entityClassMember = new ClassMember(fkEntityClass.Name.Replace("Entity", "").ToLowerFirstCharacter(), fkEntityClass, null, Models.DataModels.Enum.AccessModifier.Private);
@@ -101,16 +103,22 @@ namespace KoGen
                         var listClass = Models.DataModels.Predefined.PredefinedClasses.JavaList;
                         listClass.GenericList.Add(entityClass);
                         var fkEntityClassMember = new ClassMember(entityClass.Name.Replace("Entity", "") + "List", listClass, null, Models.DataModels.Enum.AccessModifier.Private);
-                        if (!col.Constraints.Any(x => x is Unique))
+                        if (col.Constraints.Any(x => x is Unique) && (col.Constraints.FirstOrDefault(x => x is Unique) as Unique).Columns.Count > 1)
                         {
                             fkEntityClass.ClassMembers.Add(fkEntityClassMember);
+                            fkEntityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.OneToMany()
+                                .SetParameter("cascade", "CascadeType.ALL")
+                                .SetParameter("mappedBy", entityClassMember.Name));
+
                             entityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.ManyToOne());
-                            fkEntityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.OneToMany());
-                            fkEntityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.JoinColumn()
+                            entityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.JoinColumn()
                                 .SetParameter("referencedColumnName", fkEntityClass.EntityConstraints.GetStaticMemberByValue((col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).Column.Name))
-                                .SetParameter("name", ReferenceValue.FromStaticMemberByValue(entityClass.EntityConstraints, (col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).ReferenceColumn.Name))
+                                .SetParameter("name", KoGen.Models.DataModels.ReferenceValue.FromStaticMemberByValue( entityClass.EntityConstraints, col.Name) )
                                 .SetParameter("foreignKey", Models.DataModels.Predefined.PredefinedAnnotations.ForeignKey()
                                     .SetParameter("name", (col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).Name)));
+
+                            
+                            
                         }
                         else
                         {
