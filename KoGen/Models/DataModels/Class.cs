@@ -151,7 +151,7 @@ namespace KoGen.Models.DataModels
 
         public override string ToString()
         {
-            return $"{Destination.Name}.{Destination.Type.ClassMembers.SetterFunctions.First(x => x.ClassMember == DestinationClassMember).Name}({Source.Name}.{Source.Type.ClassMembers.GetterFunctions.First(x=>x.ClassMember == SourceClassMember).Name}());";
+            return $"{Destination.Name}.{Destination.Type.ClassMembers.SetterFunctions.First(x => x.ClassMember.Name == DestinationClassMember.Name).Name}({Source.Name}.{Source.Type.ClassMembers.GetterFunctions.First(x=>x.ClassMember.Name == SourceClassMember.Name).Name}());";
         }
     }
 
@@ -235,6 +235,10 @@ namespace KoGen.Models.DataModels
             return res;
         }
 
+        private string FunctionString =>
+            Functions.Aggregate(x => x.ToString(), NewLineTab, DoubleNewLineTab, NewLineTab);
+        
+
         public virtual string ToJavaFile()
         {
             return ($"{PackageString}"
@@ -243,7 +247,8 @@ namespace KoGen.Models.DataModels
                     + $"{AccessModifierString}{NonAccessModifiersString} class {Name}{GenericString} {BaseClassString}{{"
                     + $"{ClassMembers.ClassMembersString}"
                     + $"{GetterAndSetterString()}"
-                    + $"}}");
+                    + $"{FunctionString}"
+                    + $"{NewLine}}}");
         }
 
         #endregion

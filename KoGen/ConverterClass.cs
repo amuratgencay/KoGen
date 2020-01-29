@@ -40,8 +40,27 @@ namespace KoGen
                         SourceClassMember = entityMember
                     });
             }
+            Functions.Add(doConvertToModelFunc);
 
-
+            var doConvertToEntityFunc = new Function(this, "doConvertToEntity", PredefinedClasses.JavaVoid, Models.DataModels.Enum.AccessModifier.Protected);
+            modelParam = new FunctionParameter("model", mClass);
+            entityParam = new FunctionParameter("entity", mClass.EntityClass);
+            doConvertToEntityFunc.FunctionParameters.Add(entityParam);
+            doConvertToEntityFunc.FunctionParameters.Add(modelParam);
+            foreach (var member in modelParam.Type.ClassMembers.ClassMembers)
+            {
+                var modelMember = member;
+                var entityMember = entityParam.Type.ClassMembers.ClassMembers.FirstOrDefault(x => x.Name == member.Name);
+                doConvertToEntityFunc.Expressions.Add(
+                    new SetterAssignExpression
+                    {
+                        Destination = entityParam,
+                        Source = modelParam,
+                        DestinationClassMember = entityMember,
+                        SourceClassMember = modelMember
+                    });
+            }
+            Functions.Add(doConvertToEntityFunc);
 
             //foreach (var classMember in EntityClass.ClassMembers.ClassMembers)
             //{

@@ -24,7 +24,14 @@ namespace KoGen
         private void Form1_Load(object sender, EventArgs e)
         {
 
-
+            rtbContraints.InitColors();
+            rtbContraints.InitSyntaxColoring();
+            rtbEntities.InitColors();
+            rtbEntities.InitSyntaxColoring();
+            rtbModels.InitColors();
+            rtbModels.InitSyntaxColoring();
+            rtbConverters.InitColors();
+            rtbConverters.InitSyntaxColoring();
         }
 
 

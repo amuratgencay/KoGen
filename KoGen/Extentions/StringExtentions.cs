@@ -95,6 +95,8 @@ namespace KoGen.Extentions
         public static string NewLineTab => Environment.NewLine + "\t";
         public static string NewLineDoubleTab => Environment.NewLine + "\t\t";
         public static string DoubleNewLine => Environment.NewLine + Environment.NewLine;
+        public static string DoubleNewLineTab => Environment.NewLine + Environment.NewLine + "\t";
+
 
     }
 

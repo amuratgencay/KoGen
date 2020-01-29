@@ -28,25 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.txtModuleName = new System.Windows.Forms.TextBox();
             this.btnGenerate = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
             this.tbCodes = new System.Windows.Forms.TabControl();
             this.tbConstraints = new System.Windows.Forms.TabPage();
-            this.rtbContraints = new System.Windows.Forms.RichTextBox();
+            this.rtbContraints = new KoGen.Components.CodeEditor(this.components);
             this.splitter1 = new System.Windows.Forms.Splitter();
             this.lstConstraints = new System.Windows.Forms.ListBox();
             this.tbEntities = new System.Windows.Forms.TabPage();
-            this.rtbEntities = new System.Windows.Forms.RichTextBox();
+            this.rtbEntities = new KoGen.Components.CodeEditor(this.components);
             this.splitter2 = new System.Windows.Forms.Splitter();
             this.lstEntities = new System.Windows.Forms.ListBox();
             this.tbModels = new System.Windows.Forms.TabPage();
-            this.rtbModels = new System.Windows.Forms.RichTextBox();
+            this.rtbModels = new KoGen.Components.CodeEditor(this.components);
             this.splitter3 = new System.Windows.Forms.Splitter();
             this.lstModels = new System.Windows.Forms.ListBox();
             this.tbConverters = new System.Windows.Forms.TabPage();
-            this.rtbConverters = new System.Windows.Forms.RichTextBox();
+            this.rtbConverters = new KoGen.Components.CodeEditor(this.components);
             this.splitter4 = new System.Windows.Forms.Splitter();
             this.lstConverters = new System.Windows.Forms.ListBox();
             this.panel1.SuspendLayout();
@@ -135,12 +136,15 @@
             // rtbContraints
             // 
             this.rtbContraints.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.rtbContraints.EdgeMode = ScintillaNET.EdgeMode.Line;
+            this.rtbContraints.FontQuality = ScintillaNET.FontQuality.AntiAliased;
             this.rtbContraints.Location = new System.Drawing.Point(95, 2);
             this.rtbContraints.Margin = new System.Windows.Forms.Padding(2);
             this.rtbContraints.Name = "rtbContraints";
             this.rtbContraints.Size = new System.Drawing.Size(495, 283);
             this.rtbContraints.TabIndex = 5;
-            this.rtbContraints.Text = "";
+            this.rtbContraints.TabWidth = 2;
+            this.rtbContraints.WrapMode = ScintillaNET.WrapMode.Word;
             // 
             // splitter1
             // 
@@ -184,7 +188,10 @@
             this.rtbEntities.Name = "rtbEntities";
             this.rtbEntities.Size = new System.Drawing.Size(503, 283);
             this.rtbEntities.TabIndex = 8;
-            this.rtbEntities.Text = "";
+            this.rtbEntities.TabWidth = 2;
+            this.rtbEntities.WrapMode = ScintillaNET.WrapMode.Word;
+            this.rtbEntities.EdgeMode = ScintillaNET.EdgeMode.Line;
+            this.rtbEntities.FontQuality = ScintillaNET.FontQuality.AntiAliased;
             // 
             // splitter2
             // 
@@ -227,7 +234,10 @@
             this.rtbModels.Name = "rtbModels";
             this.rtbModels.Size = new System.Drawing.Size(492, 281);
             this.rtbModels.TabIndex = 11;
-            this.rtbModels.Text = "";
+            this.rtbModels.TabWidth = 2;
+            this.rtbModels.WrapMode = ScintillaNET.WrapMode.Word;
+            this.rtbModels.EdgeMode = ScintillaNET.EdgeMode.Line;
+            this.rtbModels.FontQuality = ScintillaNET.FontQuality.AntiAliased;
             // 
             // splitter3
             // 
@@ -269,8 +279,11 @@
             this.rtbConverters.Margin = new System.Windows.Forms.Padding(2);
             this.rtbConverters.Name = "rtbConverters";
             this.rtbConverters.Size = new System.Drawing.Size(492, 281);
-            this.rtbConverters.TabIndex = 11;
-            this.rtbConverters.Text = "";
+            this.rtbConverters.TabIndex = 11; 
+            this.rtbConverters.TabWidth = 2;
+            this.rtbConverters.WrapMode = ScintillaNET.WrapMode.Word;
+            this.rtbConverters.EdgeMode = ScintillaNET.EdgeMode.Line;
+            this.rtbConverters.FontQuality = ScintillaNET.FontQuality.AntiAliased;
             // 
             // splitter4
             // 
@@ -325,18 +338,18 @@
         private System.Windows.Forms.TabPage tbEntities;
         private System.Windows.Forms.Splitter splitter1;
         private System.Windows.Forms.ListBox lstConstraints;
-        private System.Windows.Forms.RichTextBox rtbContraints;
-        private System.Windows.Forms.RichTextBox rtbEntities;
+        private Components.CodeEditor rtbContraints;
+        private Components.CodeEditor rtbEntities;
         private System.Windows.Forms.Splitter splitter2;
         private System.Windows.Forms.ListBox lstEntities;
         private System.Windows.Forms.TabPage tbModels;
         private System.Windows.Forms.TabPage tbConverters;
-        private System.Windows.Forms.RichTextBox rtbModels;
+        private Components.CodeEditor rtbModels;
         private System.Windows.Forms.Splitter splitter3;
         private System.Windows.Forms.ListBox lstModels;
         private System.Windows.Forms.ListBox lstConverters;
         private System.Windows.Forms.Splitter splitter4;
-        private System.Windows.Forms.RichTextBox rtbConverters;
+        private Components.CodeEditor rtbConverters;
 
 
 

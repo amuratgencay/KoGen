@@ -63,8 +63,14 @@ namespace KoGen.Models.DataModels
             {
                 if (ClassMembers[i].Name == name)
                 {
+
+                    GetterFunctions.Remove(GetterFunctions.First(x => x.ClassMember.Name == ClassMembers[i].Name));
+                    SetterFunctions.Remove(SetterFunctions.First(x => x.ClassMember.Name == ClassMembers[i].Name));
                     ClassMembers.RemoveAt(i);
+                    GetterFunctions.Insert(i, new GetterFunction(classMember));
+                    SetterFunctions.Insert(i, new SetterFunction(classMember));
                     ClassMembers.Insert(i, classMember);
+
                     break;
                 }
             }

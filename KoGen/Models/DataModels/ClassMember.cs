@@ -110,5 +110,14 @@ namespace KoGen.Models.DataModels
         {
             return obj is ClassMember member && Name == member.Name;
         }
+
+        public static bool operator ==(ClassMember cm1, ClassMember cm2)
+        {
+            return cm1.Owner == cm2.Owner && cm1.Name == cm2.Name;
+        }
+        public static bool operator !=(ClassMember cm1, ClassMember cm2)
+        {
+            return !(cm1 == cm2);
+        }
     }
 }
