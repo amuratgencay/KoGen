@@ -110,18 +110,18 @@ namespace KoGen
                         {
                             fkEntityClass.ClassMembers.Add(fkEntityClassMember);
                             fkEntityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.OneToMany()
-                                .SetParameter("cascade", "CascadeType.ALL")
+                                .SetParameter("cascade", new ReferenceValue("CascadeType.ALL"))
                                 .SetParameter("mappedBy", entityClassMember.Name));
 
                             entityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.ManyToOne());
                             entityClassMember.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.JoinColumn()
                                 .SetParameter("referencedColumnName", fkEntityClass.EntityConstraints.GetStaticMemberByValue((col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).Column.Name))
-                                .SetParameter("name", KoGen.Models.DataModels.ReferenceValue.FromStaticMemberByValue( entityClass.EntityConstraints, col.Name) )
+                                .SetParameter("name", KoGen.Models.DataModels.ReferenceValue.FromStaticMemberByValue(entityClass.EntityConstraints, col.Name))
                                 .SetParameter("foreignKey", Models.DataModels.Predefined.PredefinedAnnotations.ForeignKey()
                                     .SetParameter("name", (col.Constraints.FirstOrDefault(x => x is ForeignKey) as ForeignKey).Name)));
 
-                            
-                            
+
+
                         }
                         else
                         {
@@ -140,11 +140,26 @@ namespace KoGen
                 ModelDic.Add(m.Name, m);
             }
 
+            foreach (var modelClass in ModelDic.Values)
+            {
+
+            }
+
             ConverterDic = new Dictionary<string, ConverterClass>();
             foreach (var modelClass in ModelDic.Values)
             {
                 var m = new ConverterClass(modelClass, "workshop");
                 ConverterDic.Add(m.Name, m);
+            }
+            foreach (var converterClass in ConverterDic.Values)
+            {
+                foreach (var expression in converterClass.Functions.First(x => x.Name == "doConvertToEntity").Expressions.Where(x => x is SetterAssignExpression).Select(x => x as SetterAssignExpression))
+                {
+                    if(expression.DestinationClassMember.Type != expression.SourceClassMember.Type)
+                    {
+                        Console.WriteLine();
+                    }
+                }
             }
         }
 
