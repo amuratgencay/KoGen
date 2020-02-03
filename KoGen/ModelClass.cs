@@ -1,5 +1,4 @@
 ﻿using KoGen.Extentions;
-using KoGen.Models.ClassMembers;
 using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Predefined;
 using System;
@@ -10,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace KoGen
 {
+    [Serializable]
     public class ModelClass : Class
     {
         public EntityClass EntityClass { get; set; }

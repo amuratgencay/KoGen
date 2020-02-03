@@ -1,5 +1,8 @@
-﻿namespace KoGen.Models.DatabaseModels
+﻿using System;
+
+namespace KoGen.Models.DatabaseModels
 {
+    [Serializable]
     public class Sequence
     {
         public string Name { get; set; }

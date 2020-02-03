@@ -14,11 +14,13 @@ using System.Threading.Tasks;
 
 namespace KoGen
 {
+    [Serializable]
     public class UniqueConstraintClass
     {
         public ReferenceValue Name { get; set; }
         public List<ReferenceValue> ColumnList { get; set; }
     }
+    [Serializable]
     public class EntityConstraintsClass : Class
     {
         public Table Table { get; set; }

@@ -1,5 +1,4 @@
 ﻿using KoGen.Extentions;
-using KoGen.Models.ClassMembers;
 using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
 using static KoGen.Extentions.StringExtentions;
 using System.Collections;
@@ -8,9 +7,11 @@ using System.Linq;
 using KoGen.Models.DataModels.Enum;
 using static KoGen.Models.DataModels.Enum.AccessModifier;
 using static KoGen.Models.DataModels.Enum.NonAccessModifier;
+using System;
 
 namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public class ClassMember
     {
         public AccessModifier AccessModifier { get; set; } = Private;
@@ -28,7 +29,8 @@ namespace KoGen.Models.DataModels
         public ClassMember(string name, Class type, object value = null, AccessModifier accessModifier = Public, params NonAccessModifier[] nonAccessModifiers)
         {
             Name = name;
-            Type = type;
+            Type = type.Clone;
+            Type.GenericList = Type.GenericList.Select(x => x.Clone).ToList();
             AccessModifier = accessModifier;
             NonAccessModifiers = nonAccessModifiers?.ToList() ?? new List<NonAccessModifier>();
 

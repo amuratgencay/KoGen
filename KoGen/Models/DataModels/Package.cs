@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public class Package
     {
         public string Name { get; set; }

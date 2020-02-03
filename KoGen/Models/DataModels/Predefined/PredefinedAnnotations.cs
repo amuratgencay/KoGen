@@ -1,12 +1,14 @@
 ﻿using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
 using System.Collections.Generic;
-using KoGen.Models.ClassMembers;
 using KoGen.Models.DataModels.Enum;
+using System;
 
 namespace KoGen.Models.DataModels.Predefined
 {
+    [Serializable]
     public class PredefinedAnnotations
     {
+
 
         public static Annotation Entity() => new Annotation("Entity", "javax.persistence.Entity");
 
@@ -49,6 +51,9 @@ namespace KoGen.Models.DataModels.Predefined
            new ClassMember("name", JavaString),
            new ClassMember("foreignKey", JavaObject)
         );
+
+        public static Annotation Autowired() => new Annotation("Autowired", "org.springframework.beans.factory.annotation.Autowired");
+
         public static Annotation Component() => new Annotation("Component", "org.springframework.stereotype.Component");
 
     }

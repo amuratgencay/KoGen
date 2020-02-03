@@ -2,10 +2,11 @@
 using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
 using System.Collections.Generic;
 using KoGen.Models.DataModels.Enum;
-using KoGen.Models.ClassMembers;
+using System;
 
 namespace KoGen.Models.DataModels.Predefined
 {
+    [Serializable]
     public class ValidationAnnotations
     {
         public static Annotation Size() => new Annotation("Size", "javax.validation.constraints.Size",

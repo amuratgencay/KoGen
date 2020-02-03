@@ -1,13 +1,14 @@
-﻿using KoGen.Models.ClassMembers;
-using static KoGen.Models.DataModels.Enum.AccessModifier;
+﻿using static KoGen.Models.DataModels.Enum.AccessModifier;
 using static KoGen.Models.DataModels.Enum.NonAccessModifier;
 using static KoGen.Extentions.ListExtentions;
 using KoGen.Models.DataModels.Enum;
 using System.Collections.Generic;
 using System.Collections;
+using System;
 
 namespace KoGen.Models.DataModels.Predefined
 {
+    [Serializable]
     public class PredefinedClasses
     {
         public static readonly Class JavaObject = new Class

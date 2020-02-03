@@ -2,6 +2,7 @@
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
+using KoGen.Utils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -142,7 +143,14 @@ namespace KoGen
 
             foreach (var modelClass in ModelDic.Values)
             {
-
+                foreach (var classMember in modelClass.ClassMembers.ClassMembers)
+                {
+                    var mClass = ModelDic.Values.FirstOrDefault(x => x.EntityClass.Name == classMember.Type.Name || (classMember.Type == Models.DataModels.Predefined.PredefinedClasses.JavaList && x.EntityClass.Name == classMember.Type.GenericList.First().Name));
+                    if (mClass != null)
+                    {
+                        modelClass.ClassMembers.ChangeType(classMember.Name, mClass);
+                    }
+                }
             }
 
             ConverterDic = new Dictionary<string, ConverterClass>();
@@ -155,10 +163,23 @@ namespace KoGen
             {
                 foreach (var expression in converterClass.Functions.First(x => x.Name == "doConvertToEntity").Expressions.Where(x => x is SetterAssignExpression).Select(x => x as SetterAssignExpression))
                 {
-                    if(expression.DestinationClassMember.Type != expression.SourceClassMember.Type)
+                    if (expression.DestinationClassMember.Type != expression.SourceClassMember.Type)
                     {
-                        Console.WriteLine();
+                        var converter = ConverterDic.Values.FirstOrDefault(x => x.ModelClass != converterClass.ModelClass && x.ModelClass == expression.SourceClassMember.Type);
+                        if (converter != null)
+                        {
+                            if (!converterClass.ClassMembers.ClassMembers.Any(x => x.Type == converter))
+                            {
+                                converterClass.ClassMembers.Add(new ClassMember(converter.Name.ToLowerFirstCharacter(), converter, null, Models.DataModels.Enum.AccessModifier.Private, Models.DataModels.Enum.NonAccessModifier.Transient), false);
+                            }
+                        }
                     }
+                }
+                if (converterClass.ClassMembers.ClassMembers.Count > 0)
+                {
+                    var ctor = new ConstructorFunction(converterClass);
+                    ctor.Annotations.Add(Models.DataModels.Predefined.PredefinedAnnotations.Autowired());
+                    converterClass.Functions.Insert(0, ctor);
                 }
             }
         }

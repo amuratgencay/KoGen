@@ -1,5 +1,8 @@
-﻿namespace KoGen.Models.DataModels
+﻿using System;
+
+namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public abstract class Wrapper
     {
         public Package Package { get; set; }

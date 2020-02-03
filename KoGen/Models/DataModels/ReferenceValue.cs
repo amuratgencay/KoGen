@@ -5,6 +5,7 @@ using System.Collections;
 using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
 namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public class ReferenceValue
     {
         public string Value { get; set; }

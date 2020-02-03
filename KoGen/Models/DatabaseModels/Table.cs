@@ -1,4 +1,5 @@
 ﻿using KoGen.Models.DatabaseModels.ConstraintModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace KoGen.Models.DatabaseModels
 {
+    [Serializable]
     public class Table
     {
         public string Schema { get; set; }

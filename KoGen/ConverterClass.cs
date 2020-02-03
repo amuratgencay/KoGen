@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 
 namespace KoGen
 {
+    [Serializable]
     public class ConverterClass : Class
     {
         public ModelClass ModelClass { get; set; }
@@ -21,6 +22,8 @@ namespace KoGen
             BaseClass = PredefinedClasses.HvlConverter;
             BaseClass.GenericList.Add(mClass);
             BaseClass.GenericList.Add(mClass.EntityClass);
+
+            Annotations.Add(PredefinedAnnotations.Component());
 
             var doConvertToModelFunc = new Function(this, "doConvertToModel", PredefinedClasses.JavaVoid, Models.DataModels.Enum.AccessModifier.Protected);
             var modelParam = new FunctionParameter("model", mClass);
@@ -41,6 +44,9 @@ namespace KoGen
                     });
             }
             Functions.Add(doConvertToModelFunc);
+
+
+
 
             var doConvertToEntityFunc = new Function(this, "doConvertToEntity", PredefinedClasses.JavaVoid, Models.DataModels.Enum.AccessModifier.Protected);
             modelParam = new FunctionParameter("model", mClass);

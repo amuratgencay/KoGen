@@ -1,5 +1,4 @@
 ﻿using KoGen.Extentions;
-using KoGen.Models.ClassMembers;
 using static KoGen.Models.DataModels.Predefined.PredefinedClasses;
 using static KoGen.Extentions.StringExtentions;
 using System;
@@ -11,6 +10,7 @@ using static KoGen.Models.DataModels.Enum.NonAccessModifier;
 
 namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public class FunctionParameter
     {
         public List<Annotation> Annotations { get; set; } = new List<Annotation>();
@@ -44,6 +44,7 @@ namespace KoGen.Models.DataModels
             return $"{AnnotationsString}{Type.Name}{GenericString} {Name}";
         }
     }
+    [Serializable]
     public class Function
     {
         public string Name { get; set; }
@@ -66,35 +67,64 @@ namespace KoGen.Models.DataModels
             Expressions = new List<Expression>();
         }
 
-        private string AnnotationsString =>
+        protected string AnnotationsString =>
             Annotations
-            .Aggregate(x => x.ToString(), NewLine, NewLine, NewLine);
+            .Aggregate(x => x.ToString(), NewLineTab, "", NewLineTab);
 
-        private string AccessModifierString =>
+        protected string AccessModifierString =>
             AccessModifier
             .ToString()
             .ToLower();
 
-        private string NonAccessModifiersString =>
+        protected string NonAccessModifiersString =>
             NonAccessModifiers
             .Aggregate(x => x.ToString().ToLower(), " ", " ");
 
-        private string ParametersString =>
+        protected string ParametersString =>
             FunctionParameters.Aggregate(x => x.ToString(), ", ");
 
-        private string GenericString =>
+        protected string GenericString =>
             ReturnType.GenericList
             .Aggregate(x => x.Name, ", ", "<", ">");
-        private string BodyString => Expressions.Aggregate(x => $"{x}", NewLineDoubleTab, NewLineDoubleTab);
+        protected string BodyString => Expressions.Aggregate(x => $"{x}", NewLineDoubleTab, NewLineDoubleTab);
         public override string ToString()
         {
-            return $"{AccessModifierString}{NonAccessModifiersString} {ReturnType.Name}{GenericString} {Name}({ParametersString})"
+            return $"{AnnotationsString}{AccessModifierString}{NonAccessModifiersString} {ReturnType.Name}{GenericString} {Name}({ParametersString})"
                 + $"{NewLineTab}{{"
                 + $"{BodyString}"
                 + $"{NewLineTab}}}"
                 + $"{NewLineTab}";
         }
     }
+
+    [Serializable]
+    public class ConstructorFunction : Function
+    {
+        public Class Class { get; set; }
+
+        public ConstructorFunction(Class clazz) : base(clazz, $"{clazz.Name}", JavaVoid)
+        {
+            Class = clazz;
+            Class.ClassMembers.ClassMembers.ForEach(x =>
+            {
+                var fp = new FunctionParameter(x.Name, x.Type);
+                FunctionParameters.Add(fp);
+                Expressions.Add(new AssignExpression { Destination = x, Source = fp });
+            });
+            
+        }
+
+        public override string ToString()
+        {
+            return $"{AnnotationsString}{AccessModifierString}{GenericString} {Name}({ParametersString})"
+                + $"{NewLineTab}{{"
+                + $"{BodyString}"
+                + $"{NewLineTab}}}"
+                + $"{NewLineTab}";
+        }
+    }
+
+    [Serializable]
     public class SetterFunction : Function
     {
         public ClassMember ClassMember { get; set; }
@@ -106,6 +136,7 @@ namespace KoGen.Models.DataModels
             Expressions.Add(new AssignExpression { Destination = classMember, Source = fp });
         }
     }
+    [Serializable]
     public class GetterFunction : Function
     {
         public ClassMember ClassMember { get; set; }
@@ -116,11 +147,12 @@ namespace KoGen.Models.DataModels
             Expressions.Add(new ReturnExpression { ClassMember = classMember });
         }
     }
-
+    [Serializable]
     public abstract class Expression
     {
 
     }
+    [Serializable]
     public class AssignExpression : Expression
     {
         public FunctionParameter Source { get; set; }
@@ -131,7 +163,7 @@ namespace KoGen.Models.DataModels
             return $"this.{Destination.Name} = {Source.Name};";
         }
     }
-
+    [Serializable]
     public class ReturnExpression : Expression
     {
         public ClassMember ClassMember { get; set; }
@@ -140,7 +172,7 @@ namespace KoGen.Models.DataModels
             return $"return this.{ClassMember.Name};";
         }
     }
-
+    [Serializable]
     public class SetterAssignExpression : Expression
     {
         public FunctionParameter Source { get; set; }
@@ -155,7 +187,7 @@ namespace KoGen.Models.DataModels
         }
     }
 
-
+    [Serializable]
     public class Class : Wrapper
     {
 
@@ -234,7 +266,7 @@ namespace KoGen.Models.DataModels
             }
             return res;
         }
-
+        public Class Clone => (Class) this.MemberwiseClone();
         private string FunctionString =>
             Functions.Aggregate(x => x.ToString(), NewLineTab, DoubleNewLineTab, NewLineTab);
         
@@ -366,7 +398,7 @@ namespace KoGen.Models.DataModels
 
         public static bool operator !=(Class c1, Class c2)
         {
-            return c1.Name != c2?.Name;
+            return c1?.Name != c2?.Name;
         }
 
         #endregion

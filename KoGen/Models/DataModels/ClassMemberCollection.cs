@@ -7,6 +7,7 @@ using System;
 
 namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public class ClassMemberCollection
     {
         public readonly Class Owner;
@@ -21,11 +22,11 @@ namespace KoGen.Models.DataModels
             GetterFunctions = new List<GetterFunction>();
             SetterFunctions = new List<SetterFunction>();
         }
-        public ClassMemberCollection Add(ClassMember classMember)
+        public ClassMemberCollection Add(ClassMember classMember, bool addGetterSetter = true)
         {
             ClassMembers.Add(classMember);
             classMember.Owner = Owner;
-            if (!classMember.NonAccessModifiers.Contains(Abstract) && !classMember.NonAccessModifiers.Contains(Final) && !classMember.NonAccessModifiers.Contains(Static))
+            if (!classMember.NonAccessModifiers.Contains(Abstract) && !classMember.NonAccessModifiers.Contains(Final) && !classMember.NonAccessModifiers.Contains(Static) && addGetterSetter)
             {
                 GetterFunctions.Add(new GetterFunction(classMember));
                 SetterFunctions.Add(new SetterFunction(classMember));
@@ -76,6 +77,33 @@ namespace KoGen.Models.DataModels
             }
         }
 
+        public void ChangeType(string name, Class type)
+        {
+            for (int i = 0; i < ClassMembers.Count; i++)
+            {
+                if (ClassMembers[i].Name == name)
+                {
+
+                    GetterFunctions.Remove(GetterFunctions.First(x => x.ClassMember.Name == ClassMembers[i].Name));
+                    SetterFunctions.Remove(SetterFunctions.First(x => x.ClassMember.Name == ClassMembers[i].Name));
+                    var classMember = ClassMembers[i];
+                    if(classMember.Type == Predefined.PredefinedClasses.JavaList)
+                    {
+                        classMember.Type.GenericList.Clear();
+                        classMember.Type.GenericList.Add(type);
+                    }
+                    else
+                    {
+                        classMember.Type = type;
+                    }
+                    GetterFunctions.Insert(i, new GetterFunction(classMember));
+                    SetterFunctions.Insert(i, new SetterFunction(classMember));
+
+                    break;
+                }
+            }
+        }
+
         public List<Wrapper> Relations =>
            new List<Wrapper>()
                .AddList(ClassMembers.SelectMany(x => x.Annotations))
@@ -83,7 +111,7 @@ namespace KoGen.Models.DataModels
 
 
         public string ClassMembersString =>
-            ClassMembers.Aggregate(x => "\t" + x.GetDeclaration(), DoubleNewLine, DoubleNewLine, DoubleNewLine);
+            ClassMembers.Aggregate(x => "\t" + x.GetDeclaration(), DoubleNewLine, DoubleNewLine, NewLine);
 
     }
 }

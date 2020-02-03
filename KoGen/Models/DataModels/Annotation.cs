@@ -1,9 +1,11 @@
 ﻿using KoGen.Models.DataModels;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace KoGen.Models.ClassMembers
+namespace KoGen.Models.DataModels
 {
+    [Serializable]
     public class Annotation : Wrapper
     {
         public Dictionary<string, ClassMember> Parameters { get; set; } = new Dictionary<string, ClassMember>();

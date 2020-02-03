@@ -7,9 +7,11 @@ using KoGen.Models.DataModels;
 using KoGen.Models.DataModels.Predefined;
 using System.Linq;
 using KoGen.Models.DataModels.Enum;
+using System;
 
 namespace KoGen
 {
+    [Serializable]
     public class EntityClass : Class
     {
         public EntityConstraintsClass EntityConstraints { get; set; }
