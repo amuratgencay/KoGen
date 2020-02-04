@@ -8,6 +8,7 @@ using KoGen.Models.DataModels.Enum;
 using static KoGen.Models.DataModels.Enum.AccessModifier;
 using static KoGen.Models.DataModels.Enum.NonAccessModifier;
 using System;
+using KoGen.Models.DataModels.Functions;
 
 namespace KoGen.Models.DataModels
 {
@@ -25,6 +26,9 @@ namespace KoGen.Models.DataModels
 
         public readonly object DefaultValue;
         public string Comment { get; set; }
+
+        public SetterFunction SetterFunction => Owner.ClassMembers.SetterFunctions.FirstOrDefault(x => x.ClassMember.Name == Name);
+        public GetterFunction GetterFunction => Owner.ClassMembers.GetterFunctions.FirstOrDefault(x => x.ClassMember.Name == Name);
 
         public ClassMember(string name, Class type, object value = null, AccessModifier accessModifier = Public, params NonAccessModifier[] nonAccessModifiers)
         {

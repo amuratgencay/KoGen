@@ -1,5 +1,7 @@
 ﻿using KoGen.Extentions;
 using KoGen.Models.DataModels;
+using KoGen.Models.DataModels.Expressions;
+using KoGen.Models.DataModels.Functions;
 using KoGen.Models.DataModels.Predefined;
 using System;
 using System.Collections.Generic;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using static KoGen.Models.DataModels.Enum.NonAccessModifier;
 using System;
+using KoGen.Models.DataModels.Functions;
 
 namespace KoGen.Models.DataModels
 {
@@ -64,6 +65,7 @@ namespace KoGen.Models.DataModels
             {
                 if (ClassMembers[i].Name == name)
                 {
+                    classMember.Owner = ClassMembers[i].Owner;
 
                     GetterFunctions.Remove(GetterFunctions.First(x => x.ClassMember.Name == ClassMembers[i].Name));
                     SetterFunctions.Remove(SetterFunctions.First(x => x.ClassMember.Name == ClassMembers[i].Name));

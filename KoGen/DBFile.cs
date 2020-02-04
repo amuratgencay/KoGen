@@ -2,6 +2,8 @@
 using KoGen.Models.DatabaseModels;
 using KoGen.Models.DatabaseModels.ConstraintModels;
 using KoGen.Models.DataModels;
+using KoGen.Models.DataModels.Expressions;
+using KoGen.Models.DataModels.Functions;
 using KoGen.Utils;
 using System;
 using System.Collections.Generic;

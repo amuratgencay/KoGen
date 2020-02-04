@@ -5,6 +5,7 @@ using KoGen.Models.DataModels.Enum;
 using System.Collections.Generic;
 using System.Collections;
 using System;
+using KoGen.Models.DataModels.Functions;
 
 namespace KoGen.Models.DataModels.Predefined
 {

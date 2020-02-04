@@ -73,17 +73,26 @@
       <DependentUpon>MainForm.cs</DependentUpon>
     </Compile>
     <Compile Include="Models\DatabaseModels\ConstraintModels\PrimaryKey.cs" />
+    <Compile Include="Models\DataModels\Expressions\Expression.cs" />
+    <Compile Include="Models\DataModels\Expressions\AssignExpression.cs" />
     <Compile Include="Models\DataModels\ClassMember.cs" />
     <Compile Include="Models\DataModels\ClassMemberCollection.cs" />
+    <Compile Include="Models\DataModels\Functions\ConstructorFunction.cs" />
     <Compile Include="Models\DataModels\Enum\AccessModifier.cs" />
     <Compile Include="Models\DataModels\Annotation.cs" />
     <Compile Include="Models\DataModels\Class.cs" />
+    <Compile Include="Models\DataModels\Functions\Function.cs" />
+    <Compile Include="Models\DataModels\Functions\FunctionParameter.cs" />
+    <Compile Include="Models\DataModels\Functions\GetterFunction.cs" />
     <Compile Include="Models\DataModels\ReferenceValue.cs" />
     <Compile Include="Models\DataModels\Predefined\PredefinedAnnotations.cs" />
     <Compile Include="Models\DataModels\Predefined\PredefinedClasses.cs" />
     <Compile Include="Models\DataModels\Enum\NonAccessModifier.cs" />
     <Compile Include="Models\DataModels\Package.cs" />
     <Compile Include="Models\DataModels\Predefined\ValidationAnnotations.cs" />
+    <Compile Include="Models\DataModels\Functions\SetterFunction.cs" />
+    <Compile Include="Models\DataModels\Expressions\ReturnExpression.cs" />
+    <Compile Include="Models\DataModels\Expressions\SetterAssignExpression.cs" />
     <Compile Include="Models\DataModels\Wrapper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
