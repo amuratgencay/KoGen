@@ -1,0 +1,872 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "Lokasyon API",
+    "version": "v1"
+  },
+  "paths": {
+    "/api/v1/ilceler": {
+      "get": {
+        "tags": [
+          "Ilceler"
+        ],
+        "operationId": "ApiV1IlcelerGet",
+        "parameters": [
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfIlceViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfIlceViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfIlceViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ilceler/{kod}": {
+      "get": {
+        "tags": [
+          "Ilceler"
+        ],
+        "operationId": "ApiV1IlcelerByKodGet",
+        "parameters": [
+          {
+            "name": "kod",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/IlceViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IlceViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/IlceViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/ilceler/sehreBagliIlceler/{sehirKodu}": {
+      "get": {
+        "tags": [
+          "Ilceler"
+        ],
+        "operationId": "ApiV1IlcelerSehrebagliilcelerBySehirkoduGet",
+        "parameters": [
+          {
+            "name": "sehirKodu",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfIlceViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfIlceViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfIlceViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/koyler": {
+      "get": {
+        "tags": [
+          "Koyler"
+        ],
+        "operationId": "ApiV1KoylerGet",
+        "parameters": [
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfKoyViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfKoyViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfKoyViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/koyler/{kod}": {
+      "get": {
+        "tags": [
+          "Koyler"
+        ],
+        "operationId": "ApiV1KoylerByKodGet",
+        "parameters": [
+          {
+            "name": "kod",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int64"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/KoyViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KoyViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/KoyViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/koyler/ilceyeBagliKoyler/{ilceKodu}": {
+      "get": {
+        "tags": [
+          "Koyler"
+        ],
+        "operationId": "ApiV1KoylerIlceyebaglikoylerByIlcekoduGet",
+        "parameters": [
+          {
+            "name": "ilceKodu",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfKoyViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfKoyViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfKoyViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mahalleler": {
+      "get": {
+        "tags": [
+          "Mahalleler"
+        ],
+        "operationId": "ApiV1MahallelerGet",
+        "parameters": [
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfMahalleViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfMahalleViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfMahalleViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mahalleler/{kod}": {
+      "get": {
+        "tags": [
+          "Mahalleler"
+        ],
+        "operationId": "ApiV1MahallelerByKodGet",
+        "parameters": [
+          {
+            "name": "kod",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/MahalleViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MahalleViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/MahalleViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/mahalleler/ilceyeBagliMahalleler/{ilceKodu}": {
+      "get": {
+        "tags": [
+          "Mahalleler"
+        ],
+        "operationId": "ApiV1MahallelerIlceyebaglimahallelerByIlcekoduGet",
+        "parameters": [
+          {
+            "name": "ilceKodu",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfMahalleViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfMahalleViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfMahalleViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sehirler": {
+      "get": {
+        "tags": [
+          "Sehirler"
+        ],
+        "operationId": "ApiV1SehirlerGet",
+        "parameters": [
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfSehirViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfSehirViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PagedResultDtoOfSehirViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/sehirler/{kod}": {
+      "get": {
+        "tags": [
+          "Sehirler"
+        ],
+        "operationId": "ApiV1SehirlerByKodGet",
+        "parameters": [
+          {
+            "name": "kod",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer",
+              "format": "int32"
+            }
+          },
+          {
+            "name": "languageName",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "default": "tr",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/SehirViewDto"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SehirViewDto"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SehirViewDto"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TokenAuth/Authenticate": {
+      "post": {
+        "tags": [
+          "TokenAuth"
+        ],
+        "operationId": "ApiTokenauthAuthenticatePost",
+        "requestBody": {
+          "content": {
+            "application/json-patch+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateModel"
+              }
+            },
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateModel"
+              }
+            },
+            "text/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateModel"
+              }
+            },
+            "application/*+json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthenticateModel"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateResultModel"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateResultModel"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AuthenticateResultModel"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TokenAuth/RefreshToken": {
+      "post": {
+        "tags": [
+          "TokenAuth"
+        ],
+        "operationId": "ApiTokenauthRefreshtokenPost",
+        "parameters": [
+          {
+            "name": "refreshToken",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "nullable": true
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResult"
+                }
+              },
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResult"
+                }
+              },
+              "text/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefreshTokenResult"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/TokenAuth/LogOut": {
+      "get": {
+        "tags": [
+          "TokenAuth"
+        ],
+        "operationId": "ApiTokenauthLogoutGet",
+        "responses": {
+          "200": {
+            "description": "Success"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "IlceViewDto": {
+        "type": "object",
+        "properties": {
+          "kod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ad": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PagedResultDtoOfIlceViewDto": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/IlceViewDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "KoyViewDto": {
+        "type": "object",
+        "properties": {
+          "kod": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "ad": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PagedResultDtoOfKoyViewDto": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/KoyViewDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "MahalleViewDto": {
+        "type": "object",
+        "properties": {
+          "kod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ad": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PagedResultDtoOfMahalleViewDto": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MahalleViewDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "SehirViewDto": {
+        "type": "object",
+        "properties": {
+          "kod": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "ad": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "PagedResultDtoOfSehirViewDto": {
+        "type": "object",
+        "properties": {
+          "totalCount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SehirViewDto"
+            },
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticateModel": {
+        "required": [
+          "password",
+          "userNameOrEmailAddress"
+        ],
+        "type": "object",
+        "properties": {
+          "userNameOrEmailAddress": {
+            "maxLength": 256,
+            "type": "string"
+          },
+          "password": {
+            "maxLength": 32,
+            "type": "string"
+          },
+          "twoFactorVerificationCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "rememberClient": {
+            "type": "boolean"
+          },
+          "twoFactorRememberClientToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "singleSignIn": {
+            "type": "boolean",
+            "nullable": true
+          },
+          "returnUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "captchaResponse": {
+            "type": "string",
+            "nullable": true
+          }
+        },
+        "additionalProperties": false
+      },
+      "AuthenticateResultModel": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "encryptedAccessToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "expireInSeconds": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "shouldResetPassword": {
+            "type": "boolean"
+          },
+          "passwordResetCode": {
+            "type": "string",
+            "nullable": true
+          },
+          "userId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "requiresTwoFactorVerification": {
+            "type": "boolean"
+          },
+          "twoFactorAuthProviders": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "nullable": true
+          },
+          "twoFactorRememberClientToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "returnUrl": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "refreshTokenExpireInSeconds": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      },
+      "RefreshTokenResult": {
+        "type": "object",
+        "properties": {
+          "accessToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "encryptedAccessToken": {
+            "type": "string",
+            "nullable": true
+          },
+          "expireInSeconds": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "additionalProperties": false
+      }
+    }
+  }
+}
